@@ -1,7 +1,7 @@
 from pymongo import MongoClient
 import pprint
 import pandas as pd
-from pandas import DataFrame
+from pandas import DatclearaFrame
 
 # Credentials to access Mongo DB
 client = MongoClient('localhost', 27018)
