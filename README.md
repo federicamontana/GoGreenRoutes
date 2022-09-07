@@ -1,4 +1,4 @@
-# GoGreenRoutes-v0
+# GoGreenRoutes
 
 Extract data from Mongo.py                  #estrazione dati
 Text Preprocessing.py                       #pulizia dati
