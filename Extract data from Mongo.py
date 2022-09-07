@@ -1,7 +1,9 @@
+from importlib.resources import path
 from pymongo import MongoClient
 import pprint
 import pandas as pd
 from pandas import DataFrame
+from pathlib import Path
 
 # Credentials to access Mongo DB
 client = MongoClient('localhost', 27018)
@@ -50,3 +52,6 @@ df = pd.concat([df_green, df_green1, df_green1_2,
                          df_green2, df_green3, df_green4, df_green5, df_green6 ]).drop_duplicates(subset = ["id"]).reset_index(drop=True) # 26896
 
 
+filepath = Path('dataframe/df_complete.csv')  
+filepath.parent.mkdir(parents=True, exist_ok=True)  
+df.to_csv(filepath)
