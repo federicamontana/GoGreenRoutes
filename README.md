@@ -4,6 +4,12 @@ Extract data from Mongo.py                  #estrazione dati
 Text Preprocessing.py                       #pulizia dati
 NRCLex_sentiment.py                         #analisi sentiment
 
+dataframe: 
+collect data extracted from mongodb
+
+notebook:
+area used to work
+
 dict:
 NRC-Emotion-Lexicon-Wordlevel-v0.92.txt      #dizionario in tutte le lingue
 
