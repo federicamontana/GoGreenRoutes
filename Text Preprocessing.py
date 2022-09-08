@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from pathlib import Path 
 
-df = pd.read_csv ('../dataframe/df.csv')
+df = pd.read_csv ('dataframe/df.csv')
 
 ### Text cleaning 
 
