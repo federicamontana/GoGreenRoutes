@@ -26,14 +26,21 @@ def find_words(sent,df,result_dn):
     # result_dn[sent]= df2.loc[df2['bool']==True].drop('bool', axis=1)
     return result_dn.to_dict(orient='list')
 
-def find_values(x,sentiment_list):
+def find_values0(x,sentiment_list):
     #https://stackoverflow.com/questions/64675132/pandas-find-all-words-from-row-in-dataframe-match-with-list
-    anticipation = []
+    results = []
     for value in sentiment_list:
         for word in x.split():
             if word == value:
-                anticipation.append(word)
-    return ' '.join(anticipation)
+                results.append(word)
+    return ' '.join(results)
+
+def find_values(x,sentiment_list):
+    results = []
+    for value in sentiment_list:
+        if x == value:
+            results.append(x)
+    return results
 
 def new_df(sent,df,df2):
     df2[sent] = df.apply(lambda i: i.astype(str).str.contains(sent).any(), axis=0).astype(int)
