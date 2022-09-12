@@ -1,23 +1,22 @@
 import pandas as pd
 
-label = ['fear',
- 'anger',
- 'trust',
- 'surprise',
- 'positive',
- 'negative',
- 'sadness',
- 'disgust',
- 'joy',
- 'anticipation']
+label =['fear',
+    'anger',
+    'trust',
+    'surprise',
+    'positive',
+    'negative',
+    'sadness',
+    'disgust',
+    'joy',
+    'anticipation']
 
 #Compute the mean of the sentiment in a certain park 
-def aggregation(sent,df_s,aggr,labels):
+def aggregation(sent,df_s,aggr):
     num = '{0:.3f}'.format(df_s[sent].mean()) #mean
     print(sent, ": ",  num ) 
     num = float(num)
-    return aggr.append(num), labels.append(sent)
-
+    return aggr.append(num)
 
 def find_words(sent,df,result_dn):
     dn= pd.Series(df.apply(lambda i: i.astype(str).str.contains(sent).any(), axis=0),name='bool').to_frame().reset_index()
