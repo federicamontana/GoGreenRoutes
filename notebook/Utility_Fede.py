@@ -48,4 +48,4 @@ def new_df(sent,df,df2):
    
 def count_words(sentlist,df_counter):
     df_sentcount = df_counter[df_counter['words'].isin(sentlist)]
-    return df_sentcount
+    return df_sentcount.sort_values(by=['count'],ascending=False) 
