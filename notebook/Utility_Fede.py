@@ -46,3 +46,6 @@ def new_df(sent,df,df2):
     df2[sent] = df.apply(lambda i: i.astype(str).str.contains(sent).any(), axis=0).astype(int)
     return df2
    
+def count_words(sentlist,df_counter):
+    df_sentcount = df_counter[df_counter['words'].isin(sentlist)]
+    return df_sentcount
