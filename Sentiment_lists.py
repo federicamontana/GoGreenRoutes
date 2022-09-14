@@ -9,7 +9,6 @@ from Utility_Fede import label,new_df
 
 #Creo le liste dei sentimenti usate nel vocabolario
 os.chdir(r'/Users/FEDERICA/Desktop/GoGreenRoutes')
-df = pd.read_csv('dataframe/df_completec.csv')
 df2 = pd.read_json('dict/nrc_en.json', orient ='index')
 df2 = df2.fillna(0).T.head()
 df3 = pd.DataFrame()

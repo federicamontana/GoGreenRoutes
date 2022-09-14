@@ -7,8 +7,10 @@ from string import punctuation
 import matplotlib.pyplot as plt
 import seaborn as sns
 from pathlib import Path 
+import os
 
-df = pd.read_csv ('dataframe/df.csv')
+os.chdir(r'/Users/FEDERICA/Desktop/GoGreenRoutes')
+df = pd.read_csv('dataframe/df_completec.csv')
 
 ### Text cleaning 
 
@@ -37,8 +39,11 @@ for key,value in apos_dict.items():
         df['text1'] = df['text1'].replace(key,value)
 
 # Remove punctuations (anche hashtag, @)
-df['text1'] = df['text1'].str.replace('[^\w\s]','')
-df['text1'].head()
+df['text1'] =[re.sub("[\W_]", ' ', x) for x in df['text1']]
+df['text1']
+
+# Remove numbers
+df['text1'] =[re.sub("\d+", "", x) for x in df['text1']]
 
 
 ### Stopwords
@@ -87,6 +92,4 @@ plt.figure(figsize=(8,10))
 sns.barplot(y= 'Word', x = 'Count', data = df_most_common.drop([0,1]))
 plt.show()
 
-filepath = Path('../dataframe/dfc.csv')  
-filepath.parent.mkdir(parents=True, exist_ok=True)  
-df.to_csv(filepath) 
+df.to_csv('dataframe/df_completec.csv') 
