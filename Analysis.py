@@ -15,7 +15,6 @@ from Utility_Fede import aggregation_byparks,label,explode
 from Sentiment_lists import fear_list, anger_list, trust_list, surprise_list, positive_list, negative_list, sadness_list, disgust_list, joy_list, anticipation_list
 from NRC_Sentiment import aggr,df_em_mc,df_parks,df_result
 
-#df = pd.read_csv('dataframe/df_completec.csv')
 
 #Pie chart of verage sentiment in a park (Ballyouhura)
 plt.pie(aggr, labels = label) #, autopct='%.0f%%'
@@ -51,12 +50,13 @@ cmap2 = mpl.cm.Reds(np.linspace(0,1,20))
 cmap1 = mpl.colors.ListedColormap(cmap1[-10:,:-1]) 
 cmap2 = mpl.colors.ListedColormap(cmap2[-10:,:-1]) 
 
-
+color1 = 'lightblue'
+color2 = 'red'
 #create and generate our wordcloud object
 wordcloud_pos = WordCloud(background_color = 'white',
-                      contour_color = 'red',
+                      contour_color = color1,
                       mask = mask, 
-                      colormap = cmap2,
+                      colormap = cmap1,
                       contour_width = 2).generate_from_frequencies(word_pos)
 
 

@@ -26,7 +26,7 @@ def aggregation_byparks(park,df):
     aggr = [] #lista che contiene le medie
     for i in df_f['emotions_freq'].apply(pd.Series).drop("anticip", axis=1) : aggregation(i,df_s,aggr)
     df_park= pd.DataFrame({park: aggr}, index = label)
-    return df_park, aggr
+    return df_park, aggr, df_f
 
     
 #Compute the mean of the sentiment in a certain park 

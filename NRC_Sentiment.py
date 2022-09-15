@@ -24,26 +24,24 @@ df["emotions_freq"] = df["text1"].apply(lambda x: NRCLex(x).affect_frequencies)
 #Return highest emotions
 df["emotions_top"] = df["text1"].apply(lambda x: NRCLex(x).top_emotions)
 
-#Compute the sentiment in the park with aggregation_byparks
-ballyhoura_df,aggr = aggregation_byparks('ballyhoura',df)
-#create pie chart
+#Lo faccio per 3 parchi diversi e li confronto
+ballyhoura_df,aggr,df_ball = aggregation_byparks('ballyhoura',df)
+westfields_df,aggr, df_west = aggregation_byparks('westfields',df)
+shannon_df,aggr, df_shannon = aggregation_byparks('shannon',df)
+ted_russel_df,aggr, df_ted = aggregation_byparks('ted russel',df)
+df_parks = pd.concat([ballyhoura_df, westfields_df, shannon_df, ted_russel_df], axis=1)
 
 #emotional dataframe sorted with most common words
 df_em_mc = pd.DataFrame({'emotion': label, 'aggregation': aggr}).sort_values(by=['aggregation'],ascending=False)
 
-#Lo faccio per 3 parchi diversi e li confronto
-ballyhoura_df,aggr = aggregation_byparks('ballyhoura',df)
-westfields_df,aggr = aggregation_byparks('westfields',df)
-shannon_df,aggr = aggregation_byparks('shannon',df)
-ted_russel_df,aggr = aggregation_byparks('ted russel',df)
-df_parks = pd.concat([ballyhoura_df, westfields_df, shannon_df, ted_russel_df], axis=1)
-
 #STEP2: Quale parole danno questi sentimenti?
 #In Sentiment_lists.py sono presente le liste dei sentimenti pos/neg ecc presi dal vocabolario NRCLex
 
-#Vedo quante parole nel testo pulito text1 sono presenti nella lista positive
-lista = negative_list
-df_result = explode(df,lista).reset_index(name="count") # con reset_index mi trasformo la serie in dataframe
+#Vedo quante parole nel testo pulito text1 sono presenti nella lista e nel parco che scelgo
+lista = positive_list
+df_p = df_ball
+
+df_result = explode(df_p,lista).reset_index(name="count") # con reset_index mi trasformo la serie in dataframe
 
 
 
