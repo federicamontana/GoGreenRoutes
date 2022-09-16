@@ -41,7 +41,7 @@ df_em_mc = pd.DataFrame({'emotion': label, 'aggregation': aggr}).sort_values(by=
 #!!!!!!!PARAMETRI DA PASSARE!!!
 lista = positive_list
 df_p = df_ball
-word = "joy"
+word = "good"
 
 #in df_result sono presente le parole con i conteggi
 #df_match_list è il dataframe con la la lista delle parole metchate nella lista sentiemnt
@@ -50,7 +50,7 @@ df_result = df_result.reset_index(name="count") # con reset_index mi trasformo l
 
 #Extract tweet with certain words
 #nella colonna result, per ogni riga metto insieme tutte le parole che erano nella lista e vedo se contengono la parola che mi interessa
-explore_tweet_df = df_match_list[df_match_list['result'].apply(lambda x: ' '.join(x)).str.contains(r"^joy", regex=True)] 
+explore_tweet_df = df_match_list[df_match_list['result'].apply(lambda x: ' '.join(x)).str.contains(r"^"+word+"$", regex=True)] 
 
 
 
