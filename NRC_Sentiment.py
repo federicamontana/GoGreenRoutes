@@ -36,14 +36,21 @@ df_em_mc = pd.DataFrame({'emotion': label, 'aggregation': aggr}).sort_values(by=
 
 #STEP2: Quale parole danno questi sentimenti?
 #In Sentiment_lists.py sono presente le liste dei sentimenti pos/neg ecc presi dal vocabolario NRCLex
-
 #Vedo quante parole nel testo pulito text1 sono presenti nella lista e nel parco che scelgo
+
+#!!!!!!!PARAMETRI DA PASSARE!!!
 lista = positive_list
 df_p = df_ball
+word = "joy"
 
+#in df_result sono presente le parole con i conteggi
+#df_match_list è il dataframe con la la lista delle parole metchate nella lista sentiemnt
 df_result,df_match_list = explode(df_p,lista)
 df_result = df_result.reset_index(name="count") # con reset_index mi trasformo la serie in dataframe
 
+#Extract tweet with certain words
+#nella colonna result, per ogni riga metto insieme tutte le parole che erano nella lista e vedo se contengono la parola che mi interessa
+explore_tweet_df = df_match_list[df_match_list['result'].apply(lambda x: ' '.join(x)).str.contains(r"^joy", regex=True)] 
 
 
 
