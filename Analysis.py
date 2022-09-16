@@ -10,7 +10,9 @@ from pathlib import Path
 from matplotlib import cm
 from PIL import Image
 from wordcloud import WordCloud
-os.chdir(r'/Users/FEDERICA/Desktop/GoGreenRoutes')
+# os.chdir(r'/Users/FEDERICA/Desktop/GoGreenRoutes')
+os.chdir("C:\\Users\\micci\\Desktop\\GoGreenRoutes")
+
 from Utility_Fede import aggregation_byparks,label,explode
 from Sentiment_lists import fear_list, anger_list, trust_list, surprise_list, positive_list, negative_list, sadness_list, disgust_list, joy_list, anticipation_list
 from NRC_Sentiment import aggr,df_em_mc,df_parks,df_result
@@ -36,7 +38,10 @@ plt.show()
 #Most frequent postive words in Ballyohurara park (change lista to have other sentiment)
 plt.figure(figsize=(8,10))
 sns.barplot(y= 'result', x = 'count', data = df_result[0:25]) #stampo le prime 25 parole che mi danno sentiment positive
+plt.title("Most frequent positive words in Westfield")
 plt.show()
+plt.savefig('C:\\Users\\micci\\Desktop\\GoGreenRoutes\\Figures\\Posit_words_west.png')
+
 
 #WordCloud Positive Ballyhoura
 word_pos = dict(zip(df_result['result'].tolist(), df_result['count'].tolist()))
