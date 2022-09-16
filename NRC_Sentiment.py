@@ -41,7 +41,8 @@ df_em_mc = pd.DataFrame({'emotion': label, 'aggregation': aggr}).sort_values(by=
 lista = positive_list
 df_p = df_ball
 
-df_result = explode(df_p,lista).reset_index(name="count") # con reset_index mi trasformo la serie in dataframe
+df_result,df_match_list = explode(df_p,lista)
+df_result = df_result.reset_index(name="count") # con reset_index mi trasformo la serie in dataframe
 
 
 

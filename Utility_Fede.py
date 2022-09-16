@@ -46,20 +46,22 @@ def find_values(x,sent_list):
     return results
 
 def explode(df,sent_list):
+    #inserisco nella colonna result le parole dei tweet che si trovano nella lista
     df['result'] = df['text1'].apply(lambda x: find_values(x,sent_list))
-    df2 = df[df['result'].map(lambda d: len(d)) > 0]
-    df_result = df2.explode("result").groupby(by="result")["result"].count().sort_values(ascending=False)
-    return df_result 
+    #elimino le righe in cui la colonna è vuota (perchè non ha trovato niente)
+    df_match_list = df[df['result'].map(lambda d: len(d)) > 0]
+    df_result = df_match_list.explode("result").groupby(by="result")["result"].count().sort_values(ascending=False)
+    return df_result, df_match_list 
     
 def new_df(sent,df,df2):
     df2[sent] = df.apply(lambda i: i.astype(str).str.contains(sent).any(), axis=0).astype(int)
     return df2
-   
-def count_words(sentlist,df_counter):
-    df_sentcount = df_counter[df_counter['words'].isin(sentlist)]
-    return df_sentcount.sort_values(by=['count'],ascending=False) 
 
 
+
+# def count_words(sentlist,df_counter):
+#     df_sentcount = df_counter[df_counter['words'].isin(sentlist)]
+#     return df_sentcount.sort_values(by=['count'],ascending=False) 
 
 
 # def find_words(sent,df,result_dn):
