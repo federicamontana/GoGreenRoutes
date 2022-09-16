@@ -12,7 +12,9 @@ from PIL import Image
 from Utility_Fede import aggregation_byparks,label,explode
 from Sentiment_lists import fear_list, anger_list, trust_list, surprise_list, positive_list, negative_list, sadness_list, disgust_list, joy_list, anticipation_list
 
-os.chdir(r'/Users/FEDERICA/Desktop/GoGreenRoutes')
+# os.chdir(r'/Users/FEDERICA/Desktop/GoGreenRoutes')
+os.chdir("C:\\Users\\micci\\Desktop\\GoGreenRoutes")
+
 df = pd.read_csv('dataframe/df_completec.csv')
 
 #STEP1: Vedo il sentimento in media nei parchi
