@@ -18,7 +18,7 @@ shannon_df,aggr, df_shannon = aggregation_byparks('shannon',df)
 ted_russel_df,aggr, df_ted = aggregation_byparks('ted russel',df)
 #Arthur’s Quay Park
 arthur_df,aggr, df_arthur = aggregation_byparks('arthur',df)
-baggot_df,aggr, df_baggot = aggregation_byparks('castletroy',df)
+#baggot_df,aggr, df_baggot = aggregation_byparks('castletroy',df)
 
 
 lista = negative_list
@@ -29,9 +29,12 @@ plt.figure(figsize=(8,10))
 sns.barplot(y= 'result', x = 'count', data = df_result[0:25]) #stampo le prime 25 parole che mi danno sentiment positive
 plt.title("Most frequent negative words in Ted Russel")
 plt.show()
-#plt.savefig('/Users/FEDERICA/Desktop/GoGreenRoutes/Figures/negat_words_arthursquay.png')
+plt.savefig('Users/FEDERICA/Desktop/GoGreenRoutes/Figures/negat_words_arthursquay.png')
 
 
 word = "strike"
 explore_tweet_df = df_match_list[df_match_list['result'].apply(lambda x: ' '.join(x)).str.contains(r"^"+word, regex=True)]
 
+#MOST CITED PARKS
+parks_list = ['shannon', 'westfields', 'arthur', 'baggot', 'castletroy', 'brein', 'byrne']
+df_result_parks,df_match_list_parks = explode(df,parks_list)
