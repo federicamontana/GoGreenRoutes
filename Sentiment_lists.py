@@ -8,8 +8,8 @@ from pathlib import Path
 from Utility_Fede import label,new_df
 
 #Creo le liste dei sentimenti usate nel vocabolario
-# os.chdir(r'/Users/FEDERICA/Desktop/GoGreenRoutes')
-os.chdir("C:\\Users\\micci\\Desktop\\GoGreenRoutes")
+os.chdir(r'/Users/FEDERICA/Desktop/GoGreenRoutes')
+#os.chdir("C:\\Users\\micci\\Desktop\\GoGreenRoutes")
 
 df2 = pd.read_json('dict/nrc_en.json', orient ='index')
 df2 = df2.fillna(0).T.head()

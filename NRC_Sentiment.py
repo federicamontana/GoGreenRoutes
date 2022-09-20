@@ -12,8 +12,8 @@ from PIL import Image
 from Utility_Fede import aggregation_byparks,label,explode
 from Sentiment_lists import fear_list, anger_list, trust_list, surprise_list, positive_list, negative_list, sadness_list, disgust_list, joy_list, anticipation_list
 
-# os.chdir(r'/Users/FEDERICA/Desktop/GoGreenRoutes')
-os.chdir("C:\\Users\\micci\\Desktop\\GoGreenRoutes")
+os.chdir(r'/Users/FEDERICA/Desktop/GoGreenRoutes')
+#os.chdir("C:\\Users\\micci\\Desktop\\GoGreenRoutes")
 
 df = pd.read_csv('dataframe/df_completec.csv')
 
@@ -41,9 +41,9 @@ df_em_mc = pd.DataFrame({'emotion': label, 'aggregation': aggr}).sort_values(by=
 #Vedo quante parole nel testo pulito text1 sono presenti nella lista e nel parco che scelgo
 
 #!!!!!!!PARAMETRI DA PASSARE!!!
-lista = positive_list
-df_p = df_ball
-word = "good"
+lista = negative_list
+df_p = df_west
+word = "storm"
 
 #in df_result sono presente le parole con i conteggi
 #df_match_list è il dataframe con la la lista delle parole metchate nella lista sentiemnt
@@ -52,9 +52,9 @@ df_result = df_result.reset_index(name="count") # con reset_index mi trasformo l
 
 #Extract tweet with certain words
 #nella colonna result, per ogni riga metto insieme tutte le parole che erano nella lista e vedo se contengono la parola che mi interessa
-explore_tweet_df = df_match_list[df_match_list['result'].apply(lambda x: ' '.join(x)).str.contains(r"^"+word+"$", regex=True)] 
+explore_tweet_df = df_match_list[df_match_list['result'].apply(lambda x: ' '.join(x)).str.contains(r"^"+word, regex=True)]
 
-
+#explore_tweet_df.to_excel("neg_shannon_lax_drop.xlsx")  
 
 
 
