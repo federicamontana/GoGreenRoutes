@@ -27,11 +27,11 @@ df["emotions_freq"] = df["text1"].apply(lambda x: NRCLex(x).affect_frequencies)
 df["emotions_top"] = df["text1"].apply(lambda x: NRCLex(x).top_emotions)
 
 #Lo faccio per 3 parchi diversi e li confronto
-ballyhoura_df,aggr,df_ball = aggregation_byparks('ballyhoura',df)
-westfields_df,aggr, df_west = aggregation_byparks('westfields',df)
-shannon_df,aggr, df_shannon = aggregation_byparks('shannon',df)
-ted_russel_df,aggr, df_ted = aggregation_byparks('ted russel',df)
-df_parks = pd.concat([ballyhoura_df, westfields_df, shannon_df, ted_russel_df], axis=1)
+# ballyhoura_df,aggr,df_ball = aggregation_byparks('ballyhoura',df)
+# westfields_df,aggr, df_west = aggregation_byparks('westfields',df)
+# shannon_df,aggr, df_shannon = aggregation_byparks('shannon',df)
+# ted_russel_df,aggr, df_ted = aggregation_byparks('ted russel',df)
+# df_parks = pd.concat([ballyhoura_df, westfields_df, shannon_df, ted_russel_df], axis=1)
 
 #emotional dataframe sorted with most common words
 df_em_mc = pd.DataFrame({'emotion': label, 'aggregation': aggr}).sort_values(by=['aggregation'],ascending=False)
@@ -41,19 +41,22 @@ df_em_mc = pd.DataFrame({'emotion': label, 'aggregation': aggr}).sort_values(by=
 #Vedo quante parole nel testo pulito text1 sono presenti nella lista e nel parco che scelgo
 
 #!!!!!!!PARAMETRI DA PASSARE!!!
-lista = positive_list
-df_p = df_ted
-word = "mayor"
+park_name = 'arthur'
+emotion_counting_df,aggr,df_park = aggregation_byparks(park_name,df)
 
+lista = positive_list
 #in df_result sono presente le parole con i conteggi
 #df_match_list è il dataframe con la la lista delle parole metchate nella lista sentiemnt
-df_result,df_match_list = explode(df_p,lista)
+df_result,df_match_list = explode(df_park,lista)
 df_result = df_result.reset_index(name="count") # con reset_index mi trasformo la serie in dataframe
 
+word = "mayor"
 #Extract tweet with certain words
 #nella colonna result, per ogni riga metto insieme tutte le parole che erano nella lista e vedo se contengono la parola che mi interessa
 explore_tweet_df = df_match_list[df_match_list['result'].apply(lambda x: ' '.join(x)).str.contains(r"\b"+word+r"\b", regex=True)]
-#explore_tweet_df.to_excel("neg_shannon_lax_drop.xlsx")  
+
+
+
 
 
 
