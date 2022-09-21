@@ -33,16 +33,14 @@ df["emotions_top"] = df["text1"].apply(lambda x: NRCLex(x).top_emotions)
 # ted_russel_df,aggr, df_ted = aggregation_byparks('ted russel',df)
 # df_parks = pd.concat([ballyhoura_df, westfields_df, shannon_df, ted_russel_df], axis=1)
 
-#emotional dataframe sorted with most common words
-df_em_mc = pd.DataFrame({'emotion': label, 'aggregation': aggr}).sort_values(by=['aggregation'],ascending=False)
-
 #STEP2: Quale parole danno questi sentimenti?
 #In Sentiment_lists.py sono presente le liste dei sentimenti pos/neg ecc presi dal vocabolario NRCLex
 #Vedo quante parole nel testo pulito text1 sono presenti nella lista e nel parco che scelgo
 
-#!!!!!!!PARAMETRI DA PASSARE!!!
-park_name = 'arthur'
+park_name = 'ballyhoura'
 emotion_counting_df,aggr,df_park = aggregation_byparks(park_name,df)
+#emotional dataframe sorted with most common words
+df_em_mc = pd.DataFrame({'emotion': label, 'aggregation': aggr}).sort_values(by=['aggregation'],ascending=False)
 
 lista = positive_list
 #in df_result sono presente le parole con i conteggi

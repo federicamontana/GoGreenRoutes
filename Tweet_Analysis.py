@@ -19,7 +19,7 @@ emotion_counting_df,aggr,df_park = aggregation_byparks(park_name,df)
 lista = positive_list
 df_result,df_match_list = explode(df_park,lista)
 df_result = df_result.reset_index(name="count") # con reset_index mi trasformo la serie in dataframe
-plt.figure(figsize=(8,10))
+plt.figure(figsize=(7,7))
 sns.barplot(y= 'result', x = 'count', data = df_result[0:25]) #stampo le prime 25 parole che mi danno sentiment positive
 plt.title("Most frequent positive words in "+ park_name)
 plt.savefig("Figures/posit_words_"+park_name+".png")

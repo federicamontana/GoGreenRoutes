@@ -22,7 +22,8 @@ def aggregation_byparks(park,df):
     # e quello in cui ho estratto il dizionario in formato pandas e messo le emozioni in colonna
     #con .drop elimino la colonna anticip che è in più dato che esiste anticipation
     df_s = pd.concat([df_f.drop(['emotions_freq'], axis = 1), df_f['emotions_freq'].apply(pd.Series).drop("anticip", axis=1)], axis = 1)
-    df_s = df_s.replace(np.nan,0).drop_duplicates(subset=['text1'])  #Replace NaN with 0 e rimuove stessi tweet 
+    df_s = df_s.replace(np.nan,0) #Replace NaN with 0 
+    #.drop_duplicates(subset=['text1'])  #rimuove stessi tweet ma l ho messo nel file di pulizia
     aggr = [] #lista che contiene le medie
     for i in df_f['emotions_freq'].apply(pd.Series).drop("anticip", axis=1) : aggregation(i,df_s,aggr)
     df_park= pd.DataFrame({park: aggr}, index = label)
