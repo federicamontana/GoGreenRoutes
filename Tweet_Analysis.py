@@ -1,3 +1,4 @@
+from turtle import pos
 import pandas as pd
 import os
 from nrclex import NRCLex 
@@ -21,19 +22,18 @@ arthur_df,aggr, df_arthur = aggregation_byparks('arthur',df)
 #baggot_df,aggr, df_baggot = aggregation_byparks('castletroy',df)
 
 
-lista = negative_list
-df_p = df_baggot
+lista = joy_list
+df_p = df_shannon
 df_result,df_match_list = explode(df_p,lista)
 df_result = df_result.reset_index(name="count") # con reset_index mi trasformo la serie in dataframe
 plt.figure(figsize=(8,10))
 sns.barplot(y= 'result', x = 'count', data = df_result[0:25]) #stampo le prime 25 parole che mi danno sentiment positive
 plt.title("Most frequent negative words in Ted Russel")
 plt.show()
-plt.savefig('Users/FEDERICA/Desktop/GoGreenRoutes/Figures/negat_words_arthursquay.png')
+#plt.savefig('Users/FEDERICA/Desktop/GoGreenRoutes/Figures/negat_words_arthursquay.png')
 
-
-word = "strike"
-explore_tweet_df = df_match_list[df_match_list['result'].apply(lambda x: ' '.join(x)).str.contains(r"^"+word, regex=True)]
+word = "mayor"
+explore_tweet_df = df_match_list[df_match_list['result'].apply(lambda x: ' '.join(x)).str.contains(r"\b"+word+r"\b", regex=True)]
 
 #MOST CITED PARKS
 parks_list = ['shannon', 'westfields', 'arthur', 'baggot', 'castletroy', 'brein', 'byrne']
