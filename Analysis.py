@@ -10,8 +10,8 @@ from pathlib import Path
 from matplotlib import cm
 from PIL import Image
 from wordcloud import WordCloud
-# os.chdir(r'/Users/FEDERICA/Desktop/GoGreenRoutes')
-os.chdir("C:\\Users\\micci\\Desktop\\GoGreenRoutes")
+os.chdir(r'/Users/FEDERICA/Desktop/GoGreenRoutes')
+#os.chdir("C:\\Users\\micci\\Desktop\\GoGreenRoutes")
 
 from Utility_Fede import aggregation_byparks,label,explode
 from Sentiment_lists import fear_list, anger_list, trust_list, surprise_list, positive_list, negative_list, sadness_list, disgust_list, joy_list, anticipation_list

@@ -29,6 +29,20 @@ def aggregation_byparks(park,df):
     df_park= pd.DataFrame({park: aggr}, index = label)
     return df_park, aggr, df_s
 
+def aggregation_byparks_raw(park,df):
+    df = df[df['text1'].str.contains(park)] #cerco i tweet che hanno quel parco all'interno del testo
+    df_f = pd.DataFrame(df['text1'])
+    df_f["emotions_freq"] = df_f["text1"].apply(lambda x: NRCLex(x).raw_emotion_scores) #Return affect frequencies
+    #Concateno il dataframe df_f in cui ho preso solo la colonna text1 con drop
+    # e quello in cui ho estratto il dizionario in formato pandas e messo le emozioni in colonna
+    #con .drop elimino la colonna anticip che è in più dato che esiste anticipation
+    df_s = pd.concat([df_f.drop(['emotions_freq'], axis = 1), df_f['emotions_freq'].apply(pd.Series)], axis = 1)
+    df_s = df_s.replace(np.nan,0) #Replace NaN with 0 
+    #.drop_duplicates(subset=['text1'])  #rimuove stessi tweet ma l ho messo nel file di pulizia
+    aggr = [] #lista che contiene le medie
+    for i in df_f['emotions_freq'].apply(pd.Series): aggregation(i,df_s,aggr)
+    df_park= pd.DataFrame({park: aggr}, index = label)
+    return df_park, aggr, df_s
     
 #Compute the mean of the sentiment in a certain park 
 def aggregation(sent,df_s,aggr):

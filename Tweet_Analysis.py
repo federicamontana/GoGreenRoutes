@@ -13,7 +13,7 @@ os.chdir(r'/Users/FEDERICA/Desktop/GoGreenRoutes')
 #os.chdir("C:\\Users\\micci\\Desktop\\GoGreenRoutes")
 
 df = pd.read_csv('dataframe/df_completec.csv')
-park_name = 'arthur'
+park_name = 'ballyhoura'
 emotion_counting_df,aggr,df_park = aggregation_byparks(park_name,df)
 
 lista = positive_list
