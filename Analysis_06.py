@@ -13,9 +13,9 @@ from wordcloud import WordCloud
 os.chdir(r'/Users/FEDERICA/Desktop/GoGreenRoutes')
 #os.chdir("C:\\Users\\micci\\Desktop\\GoGreenRoutes")
 
-from Utility_Fede import aggregation_byparks,label,explode
-from Sentiment_lists import fear_list, anger_list, trust_list, surprise_list, positive_list, negative_list, sadness_list, disgust_list, joy_list, anticipation_list
-from NRC_Sentiment import aggr,df_em_mc,df_parks,df_result
+from Utility_Fede_04 import aggregation_byparks,label,explode
+from Sentiment_lists_05 import fear_list, anger_list, trust_list, surprise_list, positive_list, negative_list, sadness_list, disgust_list, joy_list, anticipation_list
+from NRC_Sentiment_03 import aggr,df_em_mc,df_parks,df_result
 
 
 #Pie chart of verage sentiment in a park (Ballyouhura)
