@@ -6,9 +6,9 @@ from nltk import tokenize
 os.chdir(r'/Users/FEDERICA/Desktop/GoGreenRoutes')
 #os.chdir("C:\\Users\\micci\\Desktop\\GoGreenRoutes")
 
-from Read_dictionary_03 import df2_liwc as df
-from Read_dictionary_03 import sentiment_list_liwc as sentiment_list
-from Read_dictionary_03 import emotions_liwc as emotions
+from Read_dictionary_03 import df2_nrc as df
+from Read_dictionary_03 import sentiment_list_nrc as sentiment_list
+from Read_dictionary_03 import emotions_nrc as emotions
 from Utility_Fede_2 import aggregation_byparks_2, text_emotion, explode
 
 #Set index as column and call it 'word'
