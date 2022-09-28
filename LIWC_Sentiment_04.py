@@ -25,11 +25,14 @@ df_final = text_emotion(tweet_data, 'text1', df)
 df_final.head()
 
 #Count words in a tweet
-df_final['word_count_in_tweet'] = df_final['text1'].apply(tokenize.word_tokenize).apply(len)
+#df_final['word_count_in_tweet'] = df_final['text1'].apply(tokenize.word_tokenize).apply(len)
 
+#Count the number with emotion in a tweet
+df_final['word_em_count'] = df_final[emotions].sum(axis=1)
 #Devide the number of the ex positive words present in a tweet by the total number of words in the corrispective tweet
 for emotion in emotions:
-    df_final[emotion]=df_final[emotion]/df_final['word_count_in_tweet']
+    df_final[emotion]=df_final[emotion]/df_final['word_em_count']
+df_final = df_final.fillna(0)
 
 
 ####ANALISI#########
@@ -58,7 +61,7 @@ df_result = df_result.reset_index(name="count") # con reset_index mi trasformo l
 
 
 #Analisi parole
-word = "mayor"
+word = "miss"
 #Extract tweet with certain words
 #nella colonna result, per ogni riga metto insieme tutte le parole che erano nella lista e vedo se contengono la parola che mi interessa
 explore_tweet_df = df_match_list[df_match_list['result'].apply(lambda x: ' '.join(x)).str.contains(r"\b"+word+r"\b", regex=True)]

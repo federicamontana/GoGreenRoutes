@@ -94,6 +94,8 @@ def explode(df2,sent_list):
 
 
 def text_emotion(df, column, df3):
+    #df : contiene i tweet
+    #df3 : vocabolario
     '''
     INPUT: DataFrame, string
     OUTPUT: the original DataFrame with ten new columns for each emotion
@@ -117,6 +119,31 @@ def text_emotion(df, column, df3):
                 if not emo_score.empty:
                     for emotion in list(emotions):
                         emo_df.at[i, emotion] += emo_score[emotion]
+
+    new_df = pd.concat([new_df, emo_df], axis=1)
+
+    return new_df
+
+
+def text_emotion_2(df, column, df3):
+    #df : contiene i tweet
+    #df3 : vocabolario
+    '''
+    INPUT: DataFrame, string
+    OUTPUT: the original DataFrame with ten new columns for each emotion
+    '''
+
+    new_df = df.copy()
+
+    emotions = df3.columns.drop('word')
+    emo_df = pd.DataFrame(0, index=df.index, columns=emotions)
+    for i, row in new_df.iterrows():
+        document = word_tokenize(new_df.loc[i][column])
+        for word in document:
+            emo_score = df3[df3.word == word]
+            if not emo_score.empty:
+                for emotion in emotions:
+                    emo_df.at[i, emotion] += emo_score[emotion]
 
     new_df = pd.concat([new_df, emo_df], axis=1)
 
