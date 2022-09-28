@@ -61,7 +61,7 @@ def read_dic(filepath):
 
 #####################################
 
-def aggregation_byparks_2(park,df,emotions):
+def aggregation_byparks(park,df,emotions):
     df = df[df['text1'].str.contains(park)] #cerco i tweet che hanno quel parco all'interno del testo
     aggr = [] #lista che contiene le medie
     for i in df[emotions] : aggregation(i,df,aggr)
