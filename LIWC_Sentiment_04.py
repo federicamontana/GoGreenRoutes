@@ -6,9 +6,9 @@ from nltk import tokenize
 os.chdir(r'/Users/FEDERICA/Desktop/GoGreenRoutes')
 #os.chdir("C:\\Users\\micci\\Desktop\\GoGreenRoutes")
 
-from Read_dictionary_03 import df2_nrc as df
-from Read_dictionary_03 import sentiment_list_nrc as sentiment_list
-from Read_dictionary_03 import emotions_nrc as emotions
+from Read_dictionary_03 import df2_liwc as df
+from Read_dictionary_03 import sentiment_list_liwc as sentiment_list
+from Read_dictionary_03 import emotions_liwc as emotions
 from Utility_Fede_2 import aggregation_byparks_2, text_emotion, explode
 
 #Set index as column and call it 'word'
@@ -48,7 +48,7 @@ df_parks = pd.concat([ballyhoura_df, castletroy_df, shannon_df, arthur_df], axis
 #In Sentiment_lists.py sono presente le liste dei sentimenti pos/neg ecc presi dal vocabolario NRCLex
 #Vedo quante parole nel testo pulito text1 sono presenti nella lista e nel parco che scelgo
 
-park_name = 'ballyhoura'
+park_name = 'shannon'
 emotion_counting_df,aggr,df_park = aggregation_byparks_2(park_name,df_final,emotions)
 #emotional dataframe sorted with most common words
 df_em_mc = pd.DataFrame({'emotion': sentiment_list, 'aggregation': aggr}).sort_values(by=['aggregation'],ascending=False)
@@ -61,7 +61,7 @@ df_result = df_result.reset_index(name="count") # con reset_index mi trasformo l
 
 
 #Analisi parole
-word = "miss"
+word = "lose"
 #Extract tweet with certain words
 #nella colonna result, per ogni riga metto insieme tutte le parole che erano nella lista e vedo se contengono la parola che mi interessa
 explore_tweet_df = df_match_list[df_match_list['result'].apply(lambda x: ' '.join(x)).str.contains(r"\b"+word+r"\b", regex=True)]
