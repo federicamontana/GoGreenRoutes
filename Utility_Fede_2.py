@@ -61,7 +61,7 @@ def read_dic(filepath):
 
 #####################################
 
-def aggregation_byparks_2(park,df,emotions):
+def aggregation_byparks(park,df,emotions):
     df = df[df['text1'].str.contains(park)] #cerco i tweet che hanno quel parco all'interno del testo
     aggr = [] #lista che contiene le medie
     for i in df[emotions] : aggregation(i,df,aggr)
@@ -90,10 +90,11 @@ def explode(df2,sent_list):
     #elimino le righe in cui la colonna è vuota (perchè non ha trovato niente)
     df_match_list = df2[df2['result'].map(lambda d: len(d)) > 0]
     df_result = df_match_list.explode("result").groupby(by="result")["result"].count().sort_values(ascending=False)
-    return df_result, df_match_list 
-
+    return df_result, df_match_list
 
 def text_emotion(df, column, df3):
+    #df : contiene i tweet
+    #df3 : vocabolario
     '''
     INPUT: DataFrame, string
     OUTPUT: the original DataFrame with ten new columns for each emotion
@@ -103,20 +104,13 @@ def text_emotion(df, column, df3):
 
     emotions = df3.columns.drop('word')
     emo_df = pd.DataFrame(0, index=df.index, columns=emotions)
-
-    stemmer = SnowballStemmer("english")
-
-    
-    with tqdm(total=len(list(new_df.iterrows()))) as pbar:
-        for i, row in new_df.iterrows():
-            pbar.update(1)
-            document = word_tokenize(new_df.loc[i][column])
-            for word in document:
-                word = stemmer.stem(word.lower())
-                emo_score = df3[df3.word == word]
-                if not emo_score.empty:
-                    for emotion in list(emotions):
-                        emo_df.at[i, emotion] += emo_score[emotion]
+    for i, row in new_df.iterrows():
+        document = word_tokenize(new_df.loc[i][column])
+        for word in document:
+            emo_score = df3[df3.word == word]
+            if not emo_score.empty:
+                for emotion in emotions:
+                    emo_df.at[i, emotion] += emo_score[emotion]
 
     new_df = pd.concat([new_df, emo_df], axis=1)
 
