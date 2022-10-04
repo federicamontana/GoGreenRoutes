@@ -7,9 +7,11 @@ from string import punctuation
 import matplotlib.pyplot as plt
 import seaborn as sns
 from pathlib import Path 
+import contractions
 import os
 
-os.chdir(r'/Users/FEDERICA/Desktop/GoGreenRoutes')
+#os.chdir(r'/Users/FEDERICA/Desktop/GoGreenRoutes')
+os.chdir("C:\\Users\\micci\\Desktop\\GoGreenRoutes")
 df = pd.read_csv('dataframe/df_complete.csv')
 
 ### Text cleaning 
@@ -17,6 +19,9 @@ df = pd.read_csv('dataframe/df_complete.csv')
 # Creation of a new text column called text1 with the first pre-processing step: 
 # lower case
 df['text1'] = df['text'].apply(lambda x: " ".join(x.lower() for x in x.split()))
+
+# Creo una colonna con gli Hashtag
+df["hashtag"] = df["text1"].apply(lambda x: re.findall(r"#(\w+)", x))
 
 # Remove hyperlinks
 df['text1'] = [re.sub(r'https?:\/\/.\S+', "", x) for x in df['text1']]
@@ -26,26 +31,14 @@ df['text1'] = [re.sub(r"\S+com", "", x) for x in df['text1']]
 df['text1'] = [re.sub(r"\S+@\S+", "", x) for x in df['text1']]
 
 # Remove old style retweet text "RT"
-df['text1'] = [re.sub(r'^rt[\s]+', '', x) for x in df['text1']]
+#df['text1'] = [re.sub(r'^rt[\s]+', '', x) for x in df['text1']]
+df['text1'] = [re.sub(r'rt', '', x) for x in df['text1']]
 
 #Remove duplicate tweet
 df = df.drop_duplicates(subset=['text1']) #rimuove i duplicati 
 
 # Expanding Contractions
-# dictionary consisting of the contraction and the actual value
-#Questo forse si puo' togliere perchè le contrazioni poi vanno via eliminando le stopwords (vedi dopo)
-#TUTTO QUESTO NON FUNZIONA IL METODO REPLACE NON VA BENE, VEDERE MEGLIO USANDO 
-#QUALCOSA TIPO
-#df['text1'] = df['text1'].apply(lambda x: " ".join(x for x in x.split() if x not in stopwords and x != 'don'))
-
-df['text1'] = df['text1'].apply(lambda x: x.replace("' ", "'"))
-df['text1'] = df['text1'].apply(lambda x: x.replace(" '", "'"))
-apos_dict = {"'s":" is","n't":" not","'m":" am","'ll":" will",
-           "'d":" would","'ve":" have","'re":" are","don't":"do not","don t":"do not","dont":"do not"}
-# replace the contractions
-for key,value in apos_dict.items():
-    if key in df['text1']:
-        df['text1'] = df['text1'].str.replace(key,value, inplace=True)
+df["text1"] = df["text1"].map(lambda x: contractions.fix(x))
 
 # Remove punctuations (anche hashtag, @)
 df['text1'] =[re.sub("[\W_]", ' ', x) for x in df['text1']]
