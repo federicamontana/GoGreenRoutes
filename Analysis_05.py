@@ -36,11 +36,10 @@ plt.show()
 #Most frequent postive words in Ballyohurara park (change lista to have other sentiment)
 plt.figure(figsize=(8,10))
 sns.barplot(y= 'result', x = 'count', data = df_result[0:25]) #stampo le prime 25 parole che mi danno sentiment positive
-plt.title("Most frequent positive words in Westfield")
+plt.title("Most frequent negative words in Shannon park")
 plt.show()
 #plt.savefig('C:\\Users\\micci\\Desktop\\GoGreenRoutes\\Figures\\Posit_words_west.png')
-plt.savefig('/Users/FEDERICA/Desktop/GoGreenRoutes/Figures/neg_words_ball.png')
-
+plt.savefig('/Users/FEDERICA/Desktop/GoGreenRoutes/Figures/neg_words_shannon_liwc.png')
 
 #WordCloud Positive Ballyhoura
 word_pos = dict(zip(df_result['result'].tolist(), df_result['count'].tolist()))
