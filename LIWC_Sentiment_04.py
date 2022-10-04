@@ -3,8 +3,8 @@ import os
 import json
 from nltk import tokenize
 
-os.chdir(r'/Users/FEDERICA/Desktop/GoGreenRoutes')
-#os.chdir("C:\\Users\\micci\\Desktop\\GoGreenRoutes")
+#os.chdir(r'/Users/FEDERICA/Desktop/GoGreenRoutes')
+os.chdir("C:\\Users\\micci\\Desktop\\GoGreenRoutes")
 
 from Read_dictionary_03 import df2_liwc as df
 from Read_dictionary_03 import sentiment_list_liwc as sentiment_list
@@ -45,12 +45,12 @@ df_parks = pd.concat([ballyhoura_df, castletroy_df, shannon_df, arthur_df], axis
 #In Sentiment_lists.py sono presente le liste dei sentimenti pos/neg ecc presi dal vocabolario NRCLex
 #Vedo quante parole nel testo pulito text1 sono presenti nella lista e nel parco che scelgo
 
-park_name = 'ballyhoura'
+park_name = 'shannon'
 emotion_counting_df,aggr,df_park = aggregation_byparks_2(park_name,df_final,emotions)
 #emotional dataframe sorted with most common words
 df_em_mc = pd.DataFrame({'emotion': sentiment_list, 'aggregation': aggr}).sort_values(by=['aggregation'],ascending=False)
 
-lista = sentiment_list[2] 
+lista = sentiment_list[6] 
 #in df_result sono presente le parole con i conteggi
 #df_match_list è il dataframe con la la lista delle parole metchate nella lista sentiemnt
 df_result,df_match_list = explode(df_park,lista)
