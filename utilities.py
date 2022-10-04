@@ -6,35 +6,8 @@ import os
 from pymongo import MongoClient
 from pathlib import Path
 
-os.chdir(r'/Users/FEDERICA/Desktop/GoGreenRoutes')
-
-#Extract data from MONGODB
-def extract_data():
-    client = MongoClient('localhost', 27018)
-    db = client['ggr']
-    places = db['limerick.places']
-    users = db['limerick.users']
-    media = db['limerick.media']
-    posts = db['limerick.posts']
-    df_green = pd.DataFrame(posts.find({"$and" : 
-                                               [{"$text":{"$search": "shannon nature ballyhoura Thomond Park Westfields peoplespark TedRussell Adare Wetlands shelbourne"}},
-                                                {"geo": {"place_id": "54e862bb3ff2f749"}}]} )) # 1102 post
-    df_green1 = pd.DataFrame(posts.find({ "$text":{"$search": "\"shannon estuary\" \"limerick\""}} )) # 345
-    df_green1_2 = pd.DataFrame(posts.find({ "$text":{"$search": "\"shannon river\" \"limerick\""}} )) # 776
-    df_green2 = pd.DataFrame(posts.find({ "$text":{"$search": "\"park\" \"limerick\""}} )) # 20595
-    df_green3 = pd.DataFrame(posts.find({ "$text":{"$search": "\"ballyhoura\" \"limerick\""}} )) # 1866
-    df_green4 = pd.DataFrame(posts.find({ "$text":{"$search": "\"westfields\" \"limerick\""}} )) # 666
-    df_green5 = pd.DataFrame(posts.find({ "$text":{"$search": "\"ted russel\" \"limerick\""}} )) # 69
-    df_green6 = pd.DataFrame(posts.find({ "$text":{"$search": "\"nature\" \"limerick\""}} )) # 2381
-
-    df = pd.concat([df_green, df_green1, df_green1_2,  
-                         df_green2, df_green3, df_green4, df_green5, df_green6 ]).drop_duplicates(subset = ["id"]).reset_index(drop=True) # 26896
-
-
-    filepath = Path('dataframe/df_complete.csv')  
-    filepath.parent.mkdir(parents=True, exist_ok=True)  
-    df.to_csv(filepath)
-    return df
+filepath = os.path.abspath('')
+output_path = os.path.abspath('dict')
 #READ .dic
 def _parse_categories(lines):
     """
@@ -88,3 +61,22 @@ def sentiment_lists(df):
     for i in df: 
         sentiment_list.append(df.loc[df[i]!=0][i].reset_index()['index'].tolist())
     return sentiment_list
+
+#Extract data from MONGODB
+# def extract_tweet(posts):
+#     # Df with 
+#     df_green = pd.DataFrame(posts.find({"$and" : 
+#                                                 [{"$text":{"$search": "shannon nature ballyhoura Thomond Park Westfields peoplespark TedRussell Adare Wetlands shelbourne"}},
+#                                                     {"geo": {"place_id": "54e862bb3ff2f749"}}]} )) # 1102 post
+#     df_green1 = pd.DataFrame(posts.find({ "$text":{"$search": "\"shannon estuary\" \"limerick\""}} )) # 345
+#     df_green1_2 = pd.DataFrame(posts.find({ "$text":{"$search": "\"shannon river\" \"limerick\""}} )) # 776
+#     df_green2 = pd.DataFrame(posts.find({ "$text":{"$search": "\"park\" \"limerick\""}} )) # 20595
+#     df_green3 = pd.DataFrame(posts.find({ "$text":{"$search": "\"ballyhoura\" \"limerick\""}} )) # 1866
+#     df_green4 = pd.DataFrame(posts.find({ "$text":{"$search": "\"westfields\" \"limerick\""}} )) # 666
+#     df_green5 = pd.DataFrame(posts.find({ "$text":{"$search": "\"ted russel\" \"limerick\""}} )) # 69
+#     df_green6 = pd.DataFrame(posts.find({ "$text":{"$search": "\"nature\" \"limerick\""}} )) # 2381
+
+#     df = pd.concat([df_green, df_green1, df_green1_2,  
+#                             df_green2, df_green3, df_green4, df_green5, df_green6 ]).drop_duplicates(subset = ["id"]).reset_index(drop=True) # 26896
+#     df.to_csv(os.path.join(output_path,'dfcomplete.csv'))
+#     return df

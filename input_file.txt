@@ -1,7 +1,0 @@
-input = 'liwc'
-dict_json = 'dict/nrc_en.json'
-dict_dic = 'dict/LIWC2007_English080730.dic'
-emotions_nrc =['fear', 'anger','trust','surprise','positive',
-    'negative','sadness','disgust','joy','anticipation']
-emotions_liwc = ['affect','posemo','negemo','anx','anger','sad',
-    'social','family','friend','health','leisure','death']
