@@ -2,8 +2,8 @@ import pandas as pd
 import os
 import json
 
-#os.chdir(r'/Users/FEDERICA/Desktop/GoGreenRoutes')
-os.chdir("C:\\Users\\micci\\Desktop\\GoGreenRoutes")
+os.chdir(r'/Users/FEDERICA/Desktop/GoGreenRoutes')
+#os.chdir("C:\\Users\\micci\\Desktop\\GoGreenRoutes")
 
 from Utility_Fede_2 import new_df, read_dic
 
@@ -12,11 +12,10 @@ from Utility_Fede_2 import new_df, read_dic
 dizionario,label = read_dic('dict/LIWC2007_English080730.dic')
 words = list(dizionario.keys())
 
-<<<<<<< HEAD
-with open('dict\\liwc_dic.json', 'w') as fp:
-=======
+
+#with open('dict\\liwc_dic.json', 'w') as fp:
+
 with open('dict/liwc_dic.json', 'w') as fp:
->>>>>>> 8ecfb233d34e124fb7faf2801200162172625fc0
     json.dump(dizionario, fp, indent=1)
 
 #from dictionary (with different length) to pandas df
