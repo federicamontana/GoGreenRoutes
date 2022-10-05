@@ -1,8 +1,10 @@
 import pandas as pd
 import os 
+import matplotlib.pyplot as plt
+import seaborn as sns
 from Read_dictionary_03 import emotions_liwc as emotions
 os.chdir(r'/Users/FEDERICA/Desktop/GoGreenRoutes/Update0')
-
+path_plot = os.path.abspath('plots')
 df0 = pd.read_csv('df_prova.csv', index_col=[0])
 park_list = ['ballyhoura','castletroy','shannon','arthur']
 
@@ -46,6 +48,7 @@ def find_values(x,sent_list):
                 results.append(word)
     return results
 
+df_park, ds = df_byparks('shannon',df0,emotions)
 def explode(df,sent_list):
     #inserisco nella colonna result le parole dei tweet che si trovano nella lista
     df['result'] = df['text1'].apply(lambda x: find_values(x,sent_list))
@@ -53,3 +56,12 @@ def explode(df,sent_list):
     df_match_list = df[df['result'].map(lambda d: len(d)) > 0]
     df_result = df_match_list.explode("result").groupby(by="result")["result"].count().sort_values(ascending=False)
     return df_result, df_match_list
+
+#Pie chart of verage sentiment in a park (Ballyouhura)
+def mean_pie(ds,save_name):
+    plt.pie(ds.loc['mean'].to_list(), labels = emotions)
+    sns.set(rc={'figure.figsize':(20,10)})
+    plt.show()
+    plt.savefig(os.path.join(path_plot,save_name))
+
+mean_pie(ds,'prova.png')
