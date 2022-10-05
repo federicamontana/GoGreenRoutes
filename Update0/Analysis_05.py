@@ -10,7 +10,7 @@ from pathlib import Path
 from matplotlib import cm
 from PIL import Image
 from wordcloud import WordCloud
-os.chdir(r'/Users/FEDERICA/Desktop/GoGreenRoutes')
+#os.chdir(r'/Users/FEDERICA/Desktop/GoGreenRoutes')
 #os.chdir("C:\\Users\\micci\\Desktop\\GoGreenRoutes")
 
 from NRC_Sentiment_04 import aggr,df_em_mc,df_parks,df_result

@@ -2,8 +2,8 @@ import pandas as pd
 from nrclex import NRCLex 
 import numpy as np
 import os 
-from pymongo import MongoClient
-from pathlib import Path
+import matplotlib as mpl
+from matplotlib import cm
 from nltk import word_tokenize
 
 filepath = os.path.abspath('')
@@ -118,5 +118,18 @@ def explode(df,sent_list):
     df_match_list = df[df['result'].map(lambda d: len(d)) > 0]
     df_result = df_match_list.explode("result").groupby(by="result")["result"].count().sort_values(ascending=False)
     return df_result.reset_index(name="count"), df_match_list
+
+def colors(sent):
+    # import the desired colormap from matplotlib
+    if sent == 'pos':
+        cmap = mpl.cm.Blues(np.linspace(0,1,20)) 
+        # the darker part of the matrix is selected for readability
+        cmap = mpl.colors.ListedColormap(cmap[-10:,:-1]) 
+        color = 'lightblue'
+    else:
+        cmap = mpl.cm.Reds(np.linspace(0,1,20)) 
+        cmap = mpl.colors.ListedColormap(cmap[-10:,:-1]) 
+        color = 'red'
+    return cmap, color
 
 
