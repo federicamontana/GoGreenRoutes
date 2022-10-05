@@ -15,8 +15,6 @@ path_tweet = os.path.abspath('dataframe')
 df = pd.read_csv(os.path.join(path_tweet,'df_complete.csv'))
 
 def text_cleaning(text):
-        # Expanding Contractions
-        df["text1"] = df["text1"].apply(lambda x: contractions.fix(x))
         # Creation of a new text column called text1 with the first pre-processing step: 
         # Lower case and Expanding Contractions
         df["text1"] = text.apply(lambda x: " ".join(x.lower() for x in x.split())).apply(lambda x: contractions.fix(x))
