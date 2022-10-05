@@ -1,10 +1,10 @@
 import pandas as pd
 from nrclex import NRCLex 
 import numpy as np
-import json
 import os 
 from pymongo import MongoClient
 from pathlib import Path
+from nltk import word_tokenize
 
 filepath = os.path.abspath('')
 output_path = os.path.abspath('dict')
@@ -62,21 +62,61 @@ def sentiment_lists(df):
         sentiment_list.append(df.loc[df[i]!=0][i].reset_index()['index'].tolist())
     return sentiment_list
 
-#Extract data from MONGODB
-# def extract_tweet(posts):
-#     # Df with 
-#     df_green = pd.DataFrame(posts.find({"$and" : 
-#                                                 [{"$text":{"$search": "shannon nature ballyhoura Thomond Park Westfields peoplespark TedRussell Adare Wetlands shelbourne"}},
-#                                                     {"geo": {"place_id": "54e862bb3ff2f749"}}]} )) # 1102 post
-#     df_green1 = pd.DataFrame(posts.find({ "$text":{"$search": "\"shannon estuary\" \"limerick\""}} )) # 345
-#     df_green1_2 = pd.DataFrame(posts.find({ "$text":{"$search": "\"shannon river\" \"limerick\""}} )) # 776
-#     df_green2 = pd.DataFrame(posts.find({ "$text":{"$search": "\"park\" \"limerick\""}} )) # 20595
-#     df_green3 = pd.DataFrame(posts.find({ "$text":{"$search": "\"ballyhoura\" \"limerick\""}} )) # 1866
-#     df_green4 = pd.DataFrame(posts.find({ "$text":{"$search": "\"westfields\" \"limerick\""}} )) # 666
-#     df_green5 = pd.DataFrame(posts.find({ "$text":{"$search": "\"ted russel\" \"limerick\""}} )) # 69
-#     df_green6 = pd.DataFrame(posts.find({ "$text":{"$search": "\"nature\" \"limerick\""}} )) # 2381
+########################################################
 
-#     df = pd.concat([df_green, df_green1, df_green1_2,  
-#                             df_green2, df_green3, df_green4, df_green5, df_green6 ]).drop_duplicates(subset = ["id"]).reset_index(drop=True) # 26896
-#     df.to_csv(os.path.join(output_path,'dfcomplete.csv'))
-#     return df
+#Return df with the count of es. positive words present in the tweet
+def text_emotion(df, column, df3):
+    #df : contiene i tweet
+    #df3 : vocabolario
+    '''
+    INPUT: DataFrame, string
+    OUTPUT: the original DataFrame with ten new columns for each emotion
+    '''
+
+    new_df = df.copy()
+
+    emotions = df3.columns.drop('word')
+    emo_df = pd.DataFrame(0, index=df.index, columns=emotions)
+    for i,row in new_df.iterrows():
+        document = word_tokenize(new_df.loc[i][column])
+        for word in document:
+            emo_score = df3[df3.word == word]
+            if not emo_score.empty:
+                for emotion in emotions:
+                    emo_df.at[i, emotion] += emo_score[emotion]
+
+    new_df = pd.concat([new_df, emo_df], axis=1)
+
+    return new_df
+
+#######################################################################
+#########################ANALYSIS########################
+
+#Mi prende il df del parco che mi interessa e mi calcola la statistica 
+def df_byparks(park,df,emotions):
+    df_park = df[df['text1'].str.contains(park)] #cerco i tweet che hanno quel parco all'interno del testo
+    ds = df_park[emotions].describe()
+    #inserire questa linea se voglio il mean sentiment counting di ogni parco 
+    #df_park= pd.DataFrame({park: aggr}, index = emotions)
+    #emotional dataframe sorted with most common words
+    #df_em_mc = pd.DataFrame({'emotion': sentiment_list, 'aggregation': aggr}).sort_values(by=['aggregation'],ascending=False)
+    return df_park, ds
+
+#Find words in tweet which are in sentiment_lists
+def find_values(x,sent_list):
+    results = []
+    for value in sent_list:
+        for word in x.split():
+            if word == value:
+                results.append(word)
+    return results
+
+def explode(df,sent_list):
+    #inserisco nella colonna result le parole dei tweet che si trovano nella lista
+    df['result'] = df['text1'].apply(lambda x: find_values(x,sent_list))
+    #elimino le righe in cui la colonna è vuota (perchè non ha trovato niente)
+    df_match_list = df[df['result'].map(lambda d: len(d)) > 0]
+    df_result = df_match_list.explode("result").groupby(by="result")["result"].count().sort_values(ascending=False)
+    return df_result.reset_index(name="count"), df_match_list
+
+

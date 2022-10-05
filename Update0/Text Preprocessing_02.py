@@ -10,8 +10,8 @@ from pathlib import Path
 import contractions
 import os
 
-#os.chdir(r'/Users/FEDERICA/Desktop/GoGreenRoutes')
-os.chdir("C:\\Users\\micci\\Desktop\\GoGreenRoutes")
+os.chdir(r'/Users/FEDERICA/Desktop/GoGreenRoutes')
+#os.chdir("C:\\Users\\micci\\Desktop\\GoGreenRoutes")
 df = pd.read_csv('dataframe/df_complete.csv')
 
 ### Text cleaning 

@@ -3,19 +3,20 @@ nlp = spacy.load('en_core_web_sm')
 import re #library for regular expressions
 import pandas as pd
 from collections import Counter
-from string import punctuation 
 import matplotlib.pyplot as plt
 import seaborn as sns
 from pathlib import Path 
 import contractions
 import os
-import json
 stopwords = nlp.Defaults.stop_words
 
 # Funzione per la pulizia dei tweet
-df = pd.read_csv('dataframe/df_complete.csv')
+path_tweet = os.path.abspath('dataframe')
+df = pd.read_csv(os.path.join(path_tweet,'df_complete.csv'))
 
 def text_cleaning(text):
+        # Expanding Contractions
+        df["text1"] = df["text1"].apply(lambda x: contractions.fix(x))
         # Creation of a new text column called text1 with the first pre-processing step: 
         # Lower case and Expanding Contractions
         df["text1"] = text.apply(lambda x: " ".join(x.lower() for x in x.split())).apply(lambda x: contractions.fix(x))
