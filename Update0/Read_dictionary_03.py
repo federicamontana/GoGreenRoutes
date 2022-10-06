@@ -11,12 +11,19 @@ from Utility_Fede_2 import new_df, read_dic
 #Read a .dic file
 dizionario,label = read_dic('dict/LIWC2007_English080730.dic')
 words = list(dizionario.keys())
-
-
+with open('dict/liwc_dic.json', 'w') as fp:
+            json.dump(dizionario, fp, indent=1)
+            dizionario_json = 'dict/liwc_dic.json'
+df = pd.read_json(dizionario_json, orient ='index')
+df = df.fillna(0).T.head()
+key_cleaned= list(map(lambda x: x.replace('*', ''), df.columns))
+df1= df.set_axis(key_cleaned, axis=1)
 #with open('dict\\liwc_dic.json', 'w') as fp:
 
 with open('dict/liwc_dic.json', 'w') as fp:
     json.dump(dizionario, fp, indent=1)
+dizionario_json = 'dict/liwc_dic.json'
+df = pd.read_json(dizionario_json, orient ='index')
 
 #from dictionary (with different length) to pandas df
 df_liwc = pd.DataFrame(dict([ (k,pd.Series(v)) for k,v in dizionario.items()])).fillna(0)

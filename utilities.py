@@ -5,6 +5,8 @@ import os
 import matplotlib as mpl
 from matplotlib import cm
 from nltk import word_tokenize
+import spacy
+nlp = spacy.load('en_core_web_sm')
 
 filepath = os.path.abspath('')
 output_path = os.path.abspath('dict')
@@ -54,7 +56,12 @@ def read_dic(filepath):
     return lexicon, list(category_mapping.values())
     #return dizionario
 #####################################
+# Funzione per lemmanization
 
+def space(tweet):
+    doc = nlp(tweet)
+    return " ".join([token.lemma_ for token in doc])
+###########################################
 #CREATE SENTIMENT LIST
 def sentiment_lists(df):
     sentiment_list= []

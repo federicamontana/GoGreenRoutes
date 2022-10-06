@@ -8,10 +8,13 @@ from PIL import Image
 from wordcloud import WordCloud
 import seaborn as sns
 import numpy as np
+import contractions
+import spacy
+nlp = spacy.load('en_core_web_sm')
+import re
+stopwords = nlp.Defaults.stop_words
 
-from utilities import read_dic, text_emotion, df_byparks, explode, colors
-
-#df = pd.read_csv(os.path.join(self.path_tweet,'dfcompletec.csv'))
+from utilities import read_dic, text_emotion, df_byparks, explode, colors, space
 
 class Sentimen_Analysis():
     def __init__(self, input, input_park, input_word):
@@ -33,14 +36,14 @@ class Sentimen_Analysis():
         self.park_list = ['ballyhoura','castletroy','shannon','arthur']
         self.input_park = input_park
         self.input_word = input_word
-        
+        #self.df_tweet = pd.read_csv(os.path.join(self.path_tweet,'df_complete.csv'))
 
     #Read dictionary  
     def read_json_dic(self) -> pd.DataFrame:
         if self.input == 'liwc':
             dictionary,label = read_dic(self.dict)
-            #words = list(dictionary.keys())
-
+            #keylist = list(dictionary.keys())
+            #key_cleaned= list(map(lambda x: x.replace('*', ''), keylist))
             with open('dict/liwc_dic.json', 'w') as fp:
                 json.dump(dictionary, fp, indent=1)
             dizionario_json = 'dict/liwc_dic.json'
@@ -48,6 +51,8 @@ class Sentimen_Analysis():
             dizionario_json = self.dict
         df = pd.read_json(dizionario_json, orient ='index')
         df = df.fillna(0).T.head()
+        key_cleaned= list(map(lambda x: x.replace('*', ''), df.columns))
+        df = df.set_axis(key_cleaned, axis=1)
         df2 = pd.DataFrame()
         for emotion in self.emotions:
             df2[emotion] = df.apply(lambda i: i.astype(str).str.contains(emotion).any(), axis=0).astype(int)
@@ -56,6 +61,26 @@ class Sentimen_Analysis():
         for i in df2:
             emotion_lists.append(df2.loc[df2[i]!=0][i].reset_index()['index'].tolist())
         return df2, emotion_lists #righe le parole, colonne le emozioni, riempimento 1 se corrisponde
+    
+    #Text cleaning
+    def text_cleaning(self, df):
+        # Creation of a new text column called text1 with the first pre-processing step: 
+        # Lower case and Expanding Contractions
+        df["text1"] = df['text'].apply(lambda x: " ".join(x.lower() for x in x.split())).apply(lambda x: contractions.fix(x))
+        # Remove hyperlinks
+        # Remove websites and email address
+        # Remove old style retweet text "rt"
+        # Remove punctuations (anche hashtag, @)
+        # Remove numbers
+        df["text1"] = [re.sub(r"https?:\/\/.\S+|\S+com|\S+@\S+|^rt|[\W_]|\d+", " ", x) for x in  df["text1"]]
+        # Remove stopwords
+        df["text1"] = df["text1"].apply(lambda x: " ".join(x for x in x.split() if x not in stopwords))
+        df['text1'] = df['text1'].apply(space)
+        # Creo una colonna con gli Hashtag
+        df["hashtag"] = df["text"].apply(lambda x: re.findall(r"#(\w+)", x.lower()))
+        df = df.drop_duplicates(subset=['text1'])
+        df.to_csv(os.path.join(self.path_tweet,'df_completec.csv')) 
+        return df
 
     #For each tweet associate a sentiment (2 is that sentiment is present twice)
     def df_join(self,df):
@@ -130,24 +155,28 @@ class Sentimen_Analysis():
         plt.show()
 
     def orchestrator(self):
-        df_dic, emotion_lists = self.read_json_dic()
-        df_final = self.df_join(df_dic)
-        df_norm = self.normalization(df_final)
-        ####Analysis#####
-        df_park, ds = df_byparks(self.input_park,df_norm,self.emotions)
-        # df_ball, ds_ball, df_cast, ds_cast, df_shan, ds_shan, df_art, ds_art = self.parks(df_norm)
-        df_media_parks, media = self.parks_mean(df_norm)
-        lista = emotion_lists[2]
-        title_plot = 'titolo'
-        name_plot = 'nome'
-        df_count_words, df_match_list = self.analysis(df_park,lista)
-        self.most_freq_sent_word_bypark(df_count_words,title_plot,name_plot)
-        ####Check words#####
-        #explore_tweet_df = df_match_list[df_match_list['result'].apply(lambda x: ' '.join(x)).str.contains(r"\b"+self.input_word+r"\b", regex=True)]
-        ####Plots#####
-        #self.word_clouds(df_count_words, 'word_clouds', 'pos')
-        self.comparing_parks(df_media_parks,'comparing_parks')
-        return df_count_words
+        #df_dic, emotion_lists = self.read_json_dic()
+        #Read df extracted from Mongodb 
+        df1 = pd.read_csv(os.path.join(self.path_tweet,'df_complete.csv'))
+        df2 = self.text_cleaning(df1) #Togliere Unamed0
+        
+        # df_final = self.df_join(df_dic)
+        # df_norm = self.normalization(df_final)
+        # ####Analysis#####
+        # df_park, ds = df_byparks(self.input_park,df_norm,self.emotions)
+        # # df_ball, ds_ball, df_cast, ds_cast, df_shan, ds_shan, df_art, ds_art = self.parks(df_norm)
+        # df_media_parks, media = self.parks_mean(df_norm)
+        # lista = emotion_lists[2]
+        # title_plot = 'titolo'
+        # name_plot = 'nome'
+        # df_count_words, df_match_list = self.analysis(df_park,lista)
+        # self.most_freq_sent_word_bypark(df_count_words,title_plot,name_plot)
+        # ####Check words#####
+        # #explore_tweet_df = df_match_list[df_match_list['result'].apply(lambda x: ' '.join(x)).str.contains(r"\b"+self.input_word+r"\b", regex=True)]
+        # ####Plots#####
+        # #self.word_clouds(df_count_words, 'word_clouds', 'pos')
+        # self.comparing_parks(df_media_parks,'comparing_parks')
+        return df2
 
 
 if __name__ == '__main__':

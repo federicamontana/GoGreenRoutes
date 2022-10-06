@@ -6,6 +6,8 @@ from Read_dictionary_03 import emotions_liwc as emotions
 os.chdir(r'/Users/FEDERICA/Desktop/GoGreenRoutes/Update0')
 path_plot = os.path.abspath('plots')
 df0 = pd.read_csv('df_prova.csv', index_col=[0])
+from Read_dictionary_03 import df1 as df3
+from nltk import word_tokenize
 park_list = ['ballyhoura','castletroy','shannon','arthur']
 
 #mi prende il df del parco che mi interessa e mi calcola la statistica 
@@ -65,3 +67,46 @@ def mean_pie(ds,save_name):
     plt.savefig(os.path.join(path_plot,save_name))
 
 mean_pie(ds,'prova.png')
+
+
+def text_emotion(df, column, df3):
+    #df : contiene i tweet
+    #df3 : vocabolario
+    '''
+    INPUT: DataFrame, string
+    OUTPUT: the original DataFrame with ten new columns for each emotion
+    '''
+
+    new_df = df.copy()
+
+    emotions = df3.columns.drop('word')
+    emo_df = pd.DataFrame(0, index=df.index, columns=emotions)
+    for i,row in new_df.iterrows():
+        document = word_tokenize(new_df.loc[i][column])
+        for word in document:
+            emo_score = df3[df3.word == r"\b"+word]
+            if not emo_score.empty:
+                for emotion in emotions:
+                    emo_df.at[i, emotion] += emo_score[emotion]
+
+    new_df = pd.concat([new_df, emo_df], axis=1)
+
+    return new_df
+
+
+
+
+df = pd.DataFrame({"text": ["Hi my name is Virginia", "I have been abandoned", "I work in the academia", "i adore you"]})
+new_df = df.copy()
+
+emotions = df3.columns.drop('word')
+emo_df = pd.DataFrame(0, index=df.index, columns=emotions)
+for i,row in new_df.iterrows():
+    document = word_tokenize(new_df.loc[i]['text1'])
+    for word in document:
+        emo_score = df3[df3.word == word]
+        if not emo_score.empty:
+            for emotion in emotions:
+                emo_df.at[i, emotion] += emo_score[emotion]
+
+new_df = pd.concat([new_df, emo_df], axis=1)
