@@ -7,6 +7,7 @@ from matplotlib import cm
 from nltk import word_tokenize
 import spacy
 nlp = spacy.load('en_core_web_sm')
+import re
 
 filepath = os.path.abspath('')
 output_path = os.path.abspath('dict')
@@ -72,29 +73,64 @@ def sentiment_lists(df):
 ########################################################
 
 #Return df with the count of es. positive words present in the tweet
-def text_emotion(df, column, df3):
+def text_emotion0(df_tweet, column, df_dic):
     #df : contiene i tweet
     #df3 : vocabolario
     '''
     INPUT: DataFrame, string
     OUTPUT: the original DataFrame with ten new columns for each emotion
     '''
-
-    new_df = df.copy()
-
-    emotions = df3.columns.drop('word')
+    df = df_tweet.copy()
+    #Set index as column and call it 'word'
+    df_dic = df_dic.reset_index().rename(columns = {'index':'word'})
+    emotions = df_dic.columns.drop('word')
     emo_df = pd.DataFrame(0, index=df.index, columns=emotions)
-    for i,row in new_df.iterrows():
-        document = word_tokenize(new_df.loc[i][column])
-        for word in document:
-            emo_score = df3[df3.word == word]
+    for i,row in df.iterrows(): 
+        l=[]
+        tweet = word_tokenize(df.loc[i]['text1'])
+        for wt in tweet:
+            for word in df_dic['word']:
+                l.append(bool(re.findall(r"\b"+word,wt)))
+            s = pd.Series(l,name = 'word')
+            emo_score = df_dic[s]
+            l=[]
             if not emo_score.empty:
                 for emotion in emotions:
                     emo_df.at[i, emotion] += emo_score[emotion]
+    df = pd.concat([df, emo_df], axis=1)
+    #Remove i tweet che non hanno associato nessun sentimento
+    df = df[df[emotions].any(axis=1)]
 
-    new_df = pd.concat([new_df, emo_df], axis=1)
+    return df
 
-    return new_df
+def text_emotion(df_tweet, column, df_dic):
+    '''
+    INPUT: DataFrame, string
+    OUTPUT: the original DataFrame with ten new columns for each emotion
+    '''
+    df = df_tweet.copy()
+    #Set index as column and call it 'word'
+    #df_dic = df_dic.reset_index().rename(columns = {'index':'word'})
+    emotions = df_dic.columns.drop('word')
+    emo_df = pd.DataFrame(0, index=df.index, columns=emotions)
+    for i,row in df.iterrows(): 
+        l=[]
+        tweet = word_tokenize(df.loc[i][column])
+        for wt in tweet:
+            for word in df_dic['word']:
+                l.append(bool(re.findall(r"\b"+word,wt)))
+            s = pd.Series(l,name = 'word')
+            emo_score = df_dic[s]
+            if len(emo_score) > 1:
+                emo_score = emo_score.reset_index().drop(['index'],axis=1).head(1)
+            l=[]
+            if not emo_score.empty:
+                for emotion in emotions:
+                    emo_df.at[i, emotion] += emo_score[emotion]
+    df = pd.concat([df, emo_df], axis=1)
+    #Remove i tweet che non hanno associato nessun sentimento
+    df = df[df[emotions].any(axis=1)]
+    return df
 
 #######################################################################
 #########################ANALYSIS########################

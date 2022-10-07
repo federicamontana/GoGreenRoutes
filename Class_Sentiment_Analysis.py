@@ -88,7 +88,7 @@ class Sentimen_Analysis():
     def df_join(self,df_dic,df_tweet):
         #Dizionario
         #Set index as column and call it 'word'
-        df_dic = df_dic.reset_index().rename(columns = {'index':'word'})
+        #df_dic = df_dic.reset_index().rename(columns = {'index':'word'})
         #Apply text_emotion function which return df with the count of ex positive words present in the tweet
         df_final = text_emotion(df_tweet, 'text1', df_dic)
         #Count the number with emotion in a tweet
@@ -157,10 +157,13 @@ class Sentimen_Analysis():
     def orchestrator(self):
         df_dic, emotion_lists = self.read_json_dic()
         #Read df extracted from Mongodb 
-        #df1 = pd.read_csv(os.path.join(self.path_tweet,'df_complete.csv'))
+        # df1 = pd.read_csv(os.path.join(self.path_tweet,'df_complete.csv'))
         # df2 = self.text_cleaning(df1) 
-        
-        # df_final = self.df_join(df_dic)
+        #Read df cleaned
+        df_tweet = pd.read_csv(os.path.join(self.path_tweet,'df_completec.csv'))
+        df_dic = df_dic.reset_index().rename(columns = {'index':'word'})
+        #df_final = self.df_join(df_dic,df_tweet)
+        df_final = text_emotion(df_tweet, 'text1', df_dic)
         # df_norm = self.normalization(df_final)
         # ####Analysis#####
         # df_park, ds = df_byparks(self.input_park,df_norm,self.emotions)
@@ -176,12 +179,10 @@ class Sentimen_Analysis():
         # ####Plots#####
         # #self.word_clouds(df_count_words, 'word_clouds', 'pos')
         # self.comparing_parks(df_media_parks,'comparing_parks')
-        return df_dic, df3
+        return df_final
 
 
 if __name__ == '__main__':
     nlp = Sentimen_Analysis(input='liwc',input_park='shannon', input_word='lose')
-    df3, df = nlp.orchestrator()
-
-    
+    df = nlp.orchestrator()
         

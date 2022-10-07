@@ -1,85 +1,44 @@
 import pandas as pd
 import os 
-import matplotlib.pyplot as plt
-import seaborn as sns
-import json 
-from Read_dictionary_03 import emotions_liwc as emotions
-os.chdir(r'/Users/FEDERICA/Desktop/GoGreenRoutes/Update0')
-path_plot = os.path.abspath('plots')
-#df0 = pd.read_csv('df_prova.csv', index_col=[0])
-from Read_dictionary_03 import df1 as df3
 from nltk import word_tokenize
-from Utility_Fede_2 import new_df, read_dic
-import contractions
-park_list = ['ballyhoura','castletroy','shannon','arthur']
-
-def text_emotion(df, column, df3):
-    #df : contiene i tweet
-    #df3 : vocabolario
-    '''
-    INPUT: DataFrame, string
-    OUTPUT: the original DataFrame with ten new columns for each emotion
-    '''
-
-    new_df = df.copy()
-
-    emotions = df3.columns.drop('word')
-    emo_df = pd.DataFrame(0, index=df.index, columns=emotions)
-    for i, row in new_df.iterrows():
-        document = word_tokenize(new_df.loc[i][column])
-        for word in document:
-            emo_score = df3[df3.word == word]
-            if not emo_score.empty:
-                for emotion in emotions:
-                    emo_df.at[i, emotion] += emo_score[emotion]
-
-    new_df = pd.concat([new_df, emo_df], axis=1)
-
-    return new_df
-
-df1 = pd.read_csv('df_tweet.csv')
-df = df1[['text','text1']].head(10)
-df3 = pd.read_csv('dizionario.csv')
-
-
-import spacy
-nlp = spacy.load('en_core_web_sm')
-sentence = "The striped bats are hanging on their feet for best"
-doc = nlp(sentence)
-#" ".join([token.lemma_ for token in doc])
-document = [token.lemma_ for token in doc]
-new_df = df.copy()
 import re
-emotions = df3.columns.drop('word')
-emo_df = pd.DataFrame(0, index=df.index, columns=emotions)
-for i,row in new_df.iterrows(): #i= indice, row = riga= tweet
-    for w in df3.columns:
-        frase = new_df.loc[i]['text1']
-        parola = re.findall(r"\b"+w,frase)
-    document = word_tokenize(frase)
-    for word in document:
-        emo_score = df3[df3.word == word]
+# import spacy
+# nlp = spacy.load('en_core_web_sm')
+from prova2 import text_emotion
+my_path_data = os.path.abspath('')
+
+df_dic = pd.read_csv('Update0/dizionario.csv')
+df_tweet = pd.read_csv('dataframe/df_completec.csv')
+
+
+dfp = pd.DataFrame({"text1": ["Hi abandon abandonig", "abilities", "I have been abuse"]})
+df2p = df_dic.head(6).reset_index().drop(['index'],axis=1) #da qua succede il problema
+#quello che accade è che emod_score può risultare un dataframe con più righe
+# non solo una come dovrebbe e quindi poi quando viene associato a emo_df mi da errore
+# ho quindi aggiunto un if in piu per dire che se ottengo un df con piu righe allora 
+# prendimi solo la prima riga
+#questo anche perchè di solito parole simili hanno anche emozioni uguali e quindi va bene considerare solo una parola
+# non si tiene in conto però del fatto che ci sono 2 parole (o piu) e che quindi quel sentimento è associato a 2 (o piu) parole
+df = text_emotion(df_tweet, 'text1', df2p)
+
+dfp= df_tweet
+df2p = df_dic
+emotions = df2p.columns.drop('word')
+emo_df = pd.DataFrame(0, index=dfp.index, columns=emotions)
+for i,row in dfp.iterrows(): 
+    l=[]
+    tweet = word_tokenize(dfp.loc[i]['text1'])
+    for wt in tweet:
+        for word in df2p['word']:
+            l.append(bool(re.findall(r"\b"+word,wt)))
+        s = pd.Series(l,name = 'word')
+        emo_score = df2p[s]
+        if len(emo_score) > 1:
+            emo_score = emo_score.reset_index().drop(['index'],axis=1).head(1)
+        l=[]
         if not emo_score.empty:
             for emotion in emotions:
                 emo_df.at[i, emotion] += emo_score[emotion]
-
-new_df = pd.concat([new_df, emo_df], axis=1)
-
-new_df = df.copy()
-emotions = df3.columns.drop('word')
-emo_df = pd.DataFrame(0, index=df.index, columns=emotions)
-for word in df3.word:
-    emo_score =
-
-
-df = pd.DataFrame({"text1": ["Hi abandon", "I have been abandoned", "abilities", "i zz adore"]})
-#lista = []
-for tweet in df['text1']: 
-    for w in df3.word:
-        #lista.append(bool(re.findall(r"\b"+w,frase)))
-        s = pd.Series((bool(re.findall(r"\b"+w,tweet))))
-
-
-
-        
-df0 = df3[df3[emotions].any(axis=1)]
+df = pd.concat([dfp, emo_df], axis=1)
+#Remove i tweet che non hanno associato nessun sentimento
+df = df[df[emotions].any(axis=1)]
