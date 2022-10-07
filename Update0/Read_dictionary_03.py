@@ -25,6 +25,7 @@ with open('dict/liwc_dic.json', 'w') as fp:
 dizionario_json = 'dict/liwc_dic.json'
 df = pd.read_json(dizionario_json, orient ='index')
 
+
 #from dictionary (with different length) to pandas df
 df_liwc = pd.DataFrame(dict([ (k,pd.Series(v)) for k,v in dizionario.items()])).fillna(0)
 

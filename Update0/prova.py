@@ -2,72 +2,16 @@ import pandas as pd
 import os 
 import matplotlib.pyplot as plt
 import seaborn as sns
+import json 
 from Read_dictionary_03 import emotions_liwc as emotions
 os.chdir(r'/Users/FEDERICA/Desktop/GoGreenRoutes/Update0')
 path_plot = os.path.abspath('plots')
-df0 = pd.read_csv('df_prova.csv', index_col=[0])
+#df0 = pd.read_csv('df_prova.csv', index_col=[0])
 from Read_dictionary_03 import df1 as df3
 from nltk import word_tokenize
+from Utility_Fede_2 import new_df, read_dic
+import contractions
 park_list = ['ballyhoura','castletroy','shannon','arthur']
-
-#mi prende il df del parco che mi interessa e mi calcola la statistica 
-def df_byparks(park,df,emotions):
-    df_park = df[df['text1'].str.contains(park)] #cerco i tweet che hanno quel parco all'interno del testo
-    ds = df_park[emotions].describe()
-    #df_park_media= pd.DataFrame({park: media}, index = emotions)
-    return df_park, ds
-
-#c'è un modo per farmi tornare diversi parchi in una volta?
-df_ball, ds = df_byparks(park_list[0],df0,emotions)
-
-def parks_mean(park_list,emotions):
-    df_media_parks = pd.DataFrame()
-    for park in park_list:
-        df, ds = df_byparks(park,df0,emotions)
-        media = ds.loc['mean'].to_list()
-        df_m= pd.DataFrame({park: media}, index = emotions)
-        df_media_parks = pd.concat([df_media_parks, df_m], axis =1)
-    return df_media_parks
-
-
-# def parks_mean(park_list,emotions):
-#     df_media_parks = pd.DataFrame()
-#     df_ball, ds_ball = df_byparks(park_list[0],df0,emotions)
-#     df_cast, ds_cast = df_byparks(park_list[1],df0,emotions)
-#     df_shan, ds_shan = df_byparks(park_list[2],df0,emotions)
-#     df_art, ds_art = df_byparks(park_list[3],df0,emotions)
-#     for park in park_list:
-#         df, ds = df_byparks(park,df0,emotions)
-#         media = ds.loc['mean'].to_list()
-#         df_m= pd.DataFrame({park: media}, index = emotions)
-#         df_media_parks = pd.concat([df_media_parks, df_m], axis =1)
-#     return df_media_parks,df_ball, ds_ball,df_cast, ds_cast, df_shan, ds_shan,df_art, ds_art
-def find_values(x,sent_list):
-    results = []
-    for value in sent_list:
-        for word in x.split():
-            if word == value:
-                results.append(word)
-    return results
-
-df_park, ds = df_byparks('shannon',df0,emotions)
-def explode(df,sent_list):
-    #inserisco nella colonna result le parole dei tweet che si trovano nella lista
-    df['result'] = df['text1'].apply(lambda x: find_values(x,sent_list))
-    #elimino le righe in cui la colonna è vuota (perchè non ha trovato niente)
-    df_match_list = df[df['result'].map(lambda d: len(d)) > 0]
-    df_result = df_match_list.explode("result").groupby(by="result")["result"].count().sort_values(ascending=False)
-    return df_result, df_match_list
-
-#Pie chart of verage sentiment in a park (Ballyouhura)
-def mean_pie(ds,save_name):
-    plt.pie(ds.loc['mean'].to_list(), labels = emotions)
-    sns.set(rc={'figure.figsize':(20,10)})
-    plt.show()
-    plt.savefig(os.path.join(path_plot,save_name))
-
-mean_pie(ds,'prova.png')
-
 
 def text_emotion(df, column, df3):
     #df : contiene i tweet
@@ -81,10 +25,10 @@ def text_emotion(df, column, df3):
 
     emotions = df3.columns.drop('word')
     emo_df = pd.DataFrame(0, index=df.index, columns=emotions)
-    for i,row in new_df.iterrows():
+    for i, row in new_df.iterrows():
         document = word_tokenize(new_df.loc[i][column])
         for word in document:
-            emo_score = df3[df3.word == r"\b"+word]
+            emo_score = df3[df3.word == word]
             if not emo_score.empty:
                 for emotion in emotions:
                     emo_df.at[i, emotion] += emo_score[emotion]
@@ -93,16 +37,26 @@ def text_emotion(df, column, df3):
 
     return new_df
 
+df1 = pd.read_csv('df_tweet.csv')
+df = df1[['text','text1']].head(10)
+df3 = pd.read_csv('dizionario.csv')
 
 
-
-df = pd.DataFrame({"text": ["Hi my name is Virginia", "I have been abandoned", "I work in the academia", "i adore you"]})
+import spacy
+nlp = spacy.load('en_core_web_sm')
+sentence = "The striped bats are hanging on their feet for best"
+doc = nlp(sentence)
+#" ".join([token.lemma_ for token in doc])
+document = [token.lemma_ for token in doc]
 new_df = df.copy()
-
+import re
 emotions = df3.columns.drop('word')
 emo_df = pd.DataFrame(0, index=df.index, columns=emotions)
-for i,row in new_df.iterrows():
-    document = word_tokenize(new_df.loc[i]['text1'])
+for i,row in new_df.iterrows(): #i= indice, row = riga= tweet
+    for w in df3.columns:
+        frase = new_df.loc[i]['text1']
+        parola = re.findall(r"\b"+w,frase)
+    document = word_tokenize(frase)
     for word in document:
         emo_score = df3[df3.word == word]
         if not emo_score.empty:
@@ -110,3 +64,22 @@ for i,row in new_df.iterrows():
                 emo_df.at[i, emotion] += emo_score[emotion]
 
 new_df = pd.concat([new_df, emo_df], axis=1)
+
+new_df = df.copy()
+emotions = df3.columns.drop('word')
+emo_df = pd.DataFrame(0, index=df.index, columns=emotions)
+for word in df3.word:
+    emo_score =
+
+
+df = pd.DataFrame({"text1": ["Hi abandon", "I have been abandoned", "abilities", "i zz adore"]})
+#lista = []
+for tweet in df['text1']: 
+    for w in df3.word:
+        #lista.append(bool(re.findall(r"\b"+w,frase)))
+        s = pd.Series((bool(re.findall(r"\b"+w,tweet))))
+
+
+
+        
+df0 = df3[df3[emotions].any(axis=1)]

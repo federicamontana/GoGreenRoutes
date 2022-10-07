@@ -56,11 +56,13 @@ class Sentimen_Analysis():
         df2 = pd.DataFrame()
         for emotion in self.emotions:
             df2[emotion] = df.apply(lambda i: i.astype(str).str.contains(emotion).any(), axis=0).astype(int)
+        #elimino le parole che non hanno associato nessuna delle emozioni scelte
+        df3 = df2[df2[self.emotions].any(axis=1)]
         #create sentiment lists (ogni emozione contiene la lista di parole)
         emotion_lists = []
         for i in df2:
             emotion_lists.append(df2.loc[df2[i]!=0][i].reset_index()['index'].tolist())
-        return df2, emotion_lists #righe le parole, colonne le emozioni, riempimento 1 se corrisponde
+        return df3, emotion_lists #righe le parole, colonne le emozioni, riempimento 1 se corrisponde
     
     #Text cleaning
     def text_cleaning(self, df):
@@ -79,18 +81,16 @@ class Sentimen_Analysis():
         # Creo una colonna con gli Hashtag
         df["hashtag"] = df["text"].apply(lambda x: re.findall(r"#(\w+)", x.lower()))
         df = df.drop_duplicates(subset=['text1'])
-        df.to_csv(os.path.join(self.path_tweet,'df_completec.csv')) 
+        df.to_csv(os.path.join(self.path_tweet,'df_completec.csv'), index = False) 
         return df
 
     #For each tweet associate a sentiment (2 is that sentiment is present twice)
-    def df_join(self,df):
+    def df_join(self,df_dic,df_tweet):
         #Dizionario
         #Set index as column and call it 'word'
-        df = df.reset_index().rename(columns = {'index':'word'})
-        #Tweet - DA MODIFICARE
-        df2 = pd.read_csv(os.path.join(self.path_tweet,'df_completec.csv'))[['text1']]
+        df_dic = df_dic.reset_index().rename(columns = {'index':'word'})
         #Apply text_emotion function which return df with the count of ex positive words present in the tweet
-        df_final = text_emotion(df2, 'text1', df)
+        df_final = text_emotion(df_tweet, 'text1', df_dic)
         #Count the number with emotion in a tweet
         df_final['word_em_count'] = df_final[self.emotions].sum(axis=1)
         #Devide the number of the ex positive words present in a tweet by the total number of words in the corrispective tweet
@@ -155,10 +155,10 @@ class Sentimen_Analysis():
         plt.show()
 
     def orchestrator(self):
-        #df_dic, emotion_lists = self.read_json_dic()
+        df_dic, emotion_lists = self.read_json_dic()
         #Read df extracted from Mongodb 
-        df1 = pd.read_csv(os.path.join(self.path_tweet,'df_complete.csv'))
-        df2 = self.text_cleaning(df1) #Togliere Unamed0
+        #df1 = pd.read_csv(os.path.join(self.path_tweet,'df_complete.csv'))
+        # df2 = self.text_cleaning(df1) 
         
         # df_final = self.df_join(df_dic)
         # df_norm = self.normalization(df_final)
@@ -176,12 +176,12 @@ class Sentimen_Analysis():
         # ####Plots#####
         # #self.word_clouds(df_count_words, 'word_clouds', 'pos')
         # self.comparing_parks(df_media_parks,'comparing_parks')
-        return df2
+        return df_dic, df3
 
 
 if __name__ == '__main__':
     nlp = Sentimen_Analysis(input='liwc',input_park='shannon', input_word='lose')
-    df1 = nlp.orchestrator()
+    df3, df = nlp.orchestrator()
 
     
         
