@@ -85,19 +85,19 @@ class Sentimen_Analysis():
         return df
 
     #For each tweet associate a sentiment (2 is that sentiment is present twice)
-    def df_join(self,df_dic,df_tweet):
-        #Dizionario
-        #Set index as column and call it 'word'
-        #df_dic = df_dic.reset_index().rename(columns = {'index':'word'})
-        #Apply text_emotion function which return df with the count of ex positive words present in the tweet
-        df_final = text_emotion(df_tweet, 'text1', df_dic)
-        #Count the number with emotion in a tweet
-        df_final['word_em_count'] = df_final[self.emotions].sum(axis=1)
-        #Devide the number of the ex positive words present in a tweet by the total number of words in the corrispective tweet
-        return df_final
+    #This function is too expensive so we run it once and we saved the result df_final inside dataframe folder
+    # def df_join(self,df_dic,df_tweet):
+    #     #Apply text_emotion function which return df with the count of ex positive words present in the tweet
+    #     df_final = text_emotion(df_tweet, 'text1', df_dic, self.emotions)
+    #     #Count the number with emotion in a tweet
+    #     df_final['word_em_count'] = df_final[self.emotions].sum(axis=1)
+    #     #Devide the number of the ex positive words present in a tweet by the total number of words in the corrispective tweet
+    #     return df_final
 
     #Normalization
     def normalization(self,df_final):
+        df_final = pd.read_csv(os.path.join(self.path_tweet,df_final.csv))
+        df_final['word_em_count'] = df_final[self.emotions].sum(axis=1)
         for emotion in self.emotions:
             df_final[emotion]=df_final[emotion]/df_final['word_em_count']
         return df_final.fillna(0)

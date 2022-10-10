@@ -1,18 +1,19 @@
 # GoGreenRoutes
 
-Extract data from Mongo.py                  #estrazione dati
-Text Preprocessing.py                       #pulizia dati
-NRCLex_sentiment.py                         #analisi sentiment
+extract data from Mongo.py                  #estrazione dati
+class_sentiment_analysis.py                 #main
+utilities.py                                #funzioni
 
 dataframe: 
 collect data extracted from mongodb
-
-notebook:
-area used to work
+contain df_final which is the data frame containing tweet and the sentiment associated to each tweet
 
 dict:
-NRC-Emotion-Lexicon-Wordlevel-v0.92.txt      #dizionario in tutte le lingue
+contain dictionaries
 
 other:
 - dizionario_italiano.ipynb                    #come creare un dizionario italiano, utile in futuro                                          se vogliamo esplorare altre lingue
 - Vader_Sentimen.ipynb                          #codice vader (Virginia)
+
+Update0:
+old code before to use class

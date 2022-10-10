@@ -73,7 +73,7 @@ def sentiment_lists(df):
 ########################################################
 
 #Return df with the count of es. positive words present in the tweet
-def text_emotion0(df_tweet, column, df_dic):
+def text_emotion0(df_tweet, column, df_dic, emotions):
     #df : contiene i tweet
     #df3 : vocabolario
     '''
@@ -83,11 +83,11 @@ def text_emotion0(df_tweet, column, df_dic):
     df = df_tweet.copy()
     #Set index as column and call it 'word'
     df_dic = df_dic.reset_index().rename(columns = {'index':'word'})
-    emotions = df_dic.columns.drop('word')
+    #emotions = df_dic.columns.drop('word')
     emo_df = pd.DataFrame(0, index=df.index, columns=emotions)
     for i,row in df.iterrows(): 
         l=[]
-        tweet = word_tokenize(df.loc[i]['text1'])
+        tweet = word_tokenize(df.loc[i][column])
         for wt in tweet:
             for word in df_dic['word']:
                 l.append(bool(re.findall(r"\b"+word,wt)))
