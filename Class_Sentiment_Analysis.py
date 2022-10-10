@@ -14,7 +14,7 @@ nlp = spacy.load('en_core_web_sm')
 import re
 stopwords = nlp.Defaults.stop_words
 
-from utilities import read_dic, text_emotion, df_byparks, explode, colors, space
+from utilities import read_dic, create_emotion_lists, text_emotion, df_byparks, explode, colors, space
 
 class Sentimen_Analysis():
     def __init__(self, input, input_park, input_word):
@@ -59,10 +59,7 @@ class Sentimen_Analysis():
         #elimino le parole che non hanno associato nessuna delle emozioni scelte
         df3 = df2[df2[self.emotions].any(axis=1)]
         #create sentiment lists (ogni emozione contiene la lista di parole)
-        emotion_lists = []
-        for i in df2:
-            emotion_lists.append(df2.loc[df2[i]!=0][i].reset_index()['index'].tolist())
-        return df3, emotion_lists #righe le parole, colonne le emozioni, riempimento 1 se corrisponde
+        return df3 #righe le parole, colonne le emozioni, riempimento 1 se corrisponde
     
     #Text cleaning
     def text_cleaning(self, df):
@@ -96,23 +93,27 @@ class Sentimen_Analysis():
 
     #Normalization
     def normalization(self,df_final):
-        df_final = pd.read_csv(os.path.join(self.path_tweet,df_final.csv))
+        df_final = pd.read_csv(os.path.join(self.path_tweet,'df_final.csv'))
         df_final['word_em_count'] = df_final[self.emotions].sum(axis=1)
         for emotion in self.emotions:
             df_final[emotion]=df_final[emotion]/df_final['word_em_count']
         return df_final.fillna(0)
 
     #Analysis
+    #df_park sono i df con il nome del parco
+    #ds racchiude la statistica 
+    #df_media_parks a come colonne i parchi e come righe le emozioni
     def parks_mean(self,df):
         df_media_parks = pd.DataFrame()
         for park in self.park_list:
-            df0, ds = df_byparks(park,df,self.emotions)
-            media = ds.loc['mean'].to_list()
+            df_park, ds = df_byparks(park,df,self.emotions)
+            media = ds.loc['mean'].to_list() #media for each emotion
             df_m= pd.DataFrame({park: media}, index = self.emotions)
             df_media_parks = pd.concat([df_media_parks, df_m], axis = 1)
-        return df_media_parks, media
+        return df_media_parks, ds
     
-    def analysis(self,df_park,sent_list):
+    def analysis(self,df,sent_list):
+        df_park, ds = df_byparks(self.input_park,df,self.emotions)
         df_count_words, df_match_list = explode(df_park, sent_list)
         return df_count_words, df_match_list
     
@@ -142,7 +143,7 @@ class Sentimen_Analysis():
         cmap_plot, color_plot = colors(sent)
         word = dict(zip(df_count_words['result'].tolist(), df_count_words['count'].tolist()))
         # open the twitter image and use np.array to transform the file to an array
-        mask = np.array(Image.open("pulcino.png"))
+        mask = np.array(Image.open("plots/imm/pulcino.png"))
         #create and generate our wordcloud object
         wordcloud_pos = WordCloud(background_color = 'white',
                     contour_color = color_plot,
@@ -155,34 +156,45 @@ class Sentimen_Analysis():
         plt.show()
 
     def orchestrator(self):
-        df_dic, emotion_lists = self.read_json_dic()
+        df_dic = self.read_json_dic()
+        #Creo la lista delle parole associate ai sentimenti
+        emotion_lists = create_emotion_lists(df_dic)
         #Read df extracted from Mongodb 
-        # df1 = pd.read_csv(os.path.join(self.path_tweet,'df_complete.csv'))
-        # df2 = self.text_cleaning(df1) 
-        #Read df cleaned
-        df_tweet = pd.read_csv(os.path.join(self.path_tweet,'df_completec.csv'))
-        df_dic = df_dic.reset_index().rename(columns = {'index':'word'})
-        #df_final = self.df_join(df_dic,df_tweet)
-        df_final = text_emotion(df_tweet, 'text1', df_dic)
-        # df_norm = self.normalization(df_final)
-        # ####Analysis#####
-        # df_park, ds = df_byparks(self.input_park,df_norm,self.emotions)
-        # # df_ball, ds_ball, df_cast, ds_cast, df_shan, ds_shan, df_art, ds_art = self.parks(df_norm)
-        # df_media_parks, media = self.parks_mean(df_norm)
-        # lista = emotion_lists[2]
-        # title_plot = 'titolo'
-        # name_plot = 'nome'
-        # df_count_words, df_match_list = self.analysis(df_park,lista)
+        #df1 = pd.read_csv(os.path.join(self.path_tweet,'df_complete.csv'))
+        #df2 = self.text_cleaning(df1) 
+        #Read df cleaned directly
+        #df_tweet = pd.read_csv(os.path.join(self.path_tweet,'df_completec.csv'))
+        #Read df cleaned directly
+        df_final = pd.read_csv(os.path.join(self.path_tweet,'df_final.csv'))
+        #Normalizzazione
+        df_norm = self.normalization(df_final)
+        
+        ####ANALYSIS#####
+        #Return the statistics for each parks and the average of the park for each emotion
+        df_media_parks, ds = self.parks_mean(df_norm)
+        #Seleziono le parole corrispondenti alla lista dell'emozione corrispondente
+        #0:'affect', 1:'posemo', 2:'negemo', 3:'anx', 4:'anger',5:'sad',
+        # 6:'social',7:'family',8:'friend',9:'health',10:'leisure',11:'death'] 
+        lista = emotion_lists[2]
+        #Seleziono un parco tramite input_park e conto le parole più frequenti in df_count_words
+        #df_match_list: nella colonna 'result' ho le parole che hanno sentiment per ogni tweet
+        df_count_words, df_match_list = self.analysis(df_norm,lista)
         # self.most_freq_sent_word_bypark(df_count_words,title_plot,name_plot)
-        # ####Check words#####
-        # #explore_tweet_df = df_match_list[df_match_list['result'].apply(lambda x: ' '.join(x)).str.contains(r"\b"+self.input_word+r"\b", regex=True)]
-        # ####Plots#####
-        # #self.word_clouds(df_count_words, 'word_clouds', 'pos')
-        # self.comparing_parks(df_media_parks,'comparing_parks')
-        return df_final
+        #####CHECK WORDS#####
+        #explore_tweet_df contiene solo tweet che hanno 'input_word' selezionata
+        #explore_tweet_df = df_match_list[df_match_list['result'].apply(lambda x: ' '.join(x)).str.contains(r"\b"+self.input_word+r"\b", regex=True)]
+        
+        #####PLOT#####
+        #self.mean_pie(ds,'Pie chart')
+        #self.comparing_parks(df_media_parks,'comparing_parks')
+        title_plot = 'Most frequent negative words in Shannon park'
+        self.most_freq_sent_word_bypark(df_count_words,title_plot,'negative_shannon')
+        #self.word_clouds(df_count_words, 'word_clouds_pos', 'pos')
+    
+        return emotion_lists, df_count_words, df_match_list
 
 
 if __name__ == '__main__':
     nlp = Sentimen_Analysis(input='liwc',input_park='shannon', input_word='lose')
-    df = nlp.orchestrator()
+    el, df1, df2 = nlp.orchestrator()
         

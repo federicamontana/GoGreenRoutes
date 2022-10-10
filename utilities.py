@@ -57,6 +57,13 @@ def read_dic(filepath):
     return lexicon, list(category_mapping.values())
     #return dizionario
 #####################################
+#Create emotion lists
+def create_emotion_lists(df):
+    emotion_lists = []
+    for i in df:
+        emotion_lists.append(df.loc[df[i]!=0][i].reset_index()['index'].tolist())
+    return emotion_lists 
+####################################
 # Funzione per lemmanization
 
 def space(tweet):
