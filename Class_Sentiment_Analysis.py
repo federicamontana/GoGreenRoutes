@@ -17,7 +17,7 @@ stopwords = nlp.Defaults.stop_words
 from utilities import read_dic, create_emotion_lists, text_emotion, df_byparks, explode, colors, space
 
 class Sentimen_Analysis():
-    def __init__(self, input, input_park, input_word):
+    def __init__(self, input, input_park, input_word, sent, num_lista):
         #path
         self.path_data = os.path.abspath('dict')
         self.path_tweet = os.path.abspath('dataframe')
@@ -36,6 +36,8 @@ class Sentimen_Analysis():
         self.park_list = ['ballyhoura','castletroy','shannon','arthur']
         self.input_park = input_park
         self.input_word = input_word
+        self.sent = sent 
+        self.num_lista = num_lista
         #self.df_tweet = pd.read_csv(os.path.join(self.path_tweet,'df_complete.csv'))
 
     #Read dictionary  
@@ -136,7 +138,7 @@ class Sentimen_Analysis():
         plt.figure(figsize=(8,10))
         sns.barplot(y= 'result', x = 'count', data = df_count_words[0:25]) #stampo le prime 25 parole che mi danno sentiment positive
         plt.title(title_plot)
-        plt.savefig(os.path.join(self.path_plot,name_plot))
+        plt.savefig(os.path.join(self.path_plot+'/bar_chart/'+name_plot))
         plt.show()
         
     def word_clouds(self, df_count_words, name_plot, sent):
@@ -152,7 +154,7 @@ class Sentimen_Analysis():
                     contour_width = 2).generate_from_frequencies(word)
         plt.imshow(wordcloud_pos, interpolation='bilinear')
         plt.axis('off')
-        plt.savefig(os.path.join(self.path_plot,name_plot))
+        plt.savefig(os.path.join(self.path_plot+'/word_clouds/'+ name_plot))
         plt.show()
 
     def orchestrator(self):
@@ -173,9 +175,7 @@ class Sentimen_Analysis():
         #Return the statistics for each parks and the average of the park for each emotion
         df_media_parks, ds = self.parks_mean(df_norm)
         #Seleziono le parole corrispondenti alla lista dell'emozione corrispondente
-        #0:'affect', 1:'posemo', 2:'negemo', 3:'anx', 4:'anger',5:'sad',
-        # 6:'social',7:'family',8:'friend',9:'health',10:'leisure',11:'death'] 
-        lista = emotion_lists[2]
+        lista = emotion_lists[self.num_lista]
         #Seleziono un parco tramite input_park e conto le parole più frequenti in df_count_words
         #df_match_list: nella colonna 'result' ho le parole che hanno sentiment per ogni tweet
         df_count_words, df_match_list = self.analysis(df_norm,lista)
@@ -187,14 +187,18 @@ class Sentimen_Analysis():
         #####PLOT#####
         #self.mean_pie(ds,'Pie chart')
         #self.comparing_parks(df_media_parks,'comparing_parks')
-        title_plot = 'Most frequent negative words in Shannon park'
-        self.most_freq_sent_word_bypark(df_count_words,title_plot,'negative_shannon')
+        title_plot = 'Most frequent '+self.sent+' words in ' +self.input_park+' park'
+        self.most_freq_sent_word_bypark(df_count_words,title_plot, self.sent+'_'+self.input_park+'.png')
         #self.word_clouds(df_count_words, 'word_clouds_pos', 'pos')
     
         return emotion_lists, df_count_words, df_match_list
 
-
+park_list = ['ballyhoura','castletroy','shannon','arthur']
+#0:'affect', 1:'posemo', 2:'negemo', 3:'anx', 4:'anger', 5:'sad',
+#6:'social', 7:'family', 8:'friend', 9:'health', 10:'leisure', 11:'death'
 if __name__ == '__main__':
-    nlp = Sentimen_Analysis(input='liwc',input_park='shannon', input_word='lose')
-    el, df1, df2 = nlp.orchestrator()
+    for park in park_list:
+        nlp = Sentimen_Analysis(input ='liwc',input_park = park, input_word = 'lose', 
+                                sent = 'social', num_lista = 6)
+        el, df1, df2 = nlp.orchestrator()
         
