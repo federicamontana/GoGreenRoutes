@@ -5,11 +5,10 @@ from nltk import word_tokenize
 import re
 # import spacy
 # nlp = spacy.load('en_core_web_sm')
-from Utility_Fede_2 import text_emotion2
 my_path_data = os.path.abspath('')
 
-df_dic = pd.read_csv('../dict/dizionario.csv')
-df_tweet = pd.read_csv('../dataframe/df_complete_2.csv')
+df_dic = pd.read_csv('dict/dizionario.csv')
+df_tweet = pd.read_csv('dataframe/df_completec.csv')
 
 #df_final = text_emotion2(df_tweet, 'text1', df_dic)
 # dfp = pd.DataFrame({"text1": ["Hi abandon abandonig", "abilities", "I have been abuse"]})

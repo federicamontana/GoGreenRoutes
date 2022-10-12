@@ -42,3 +42,4 @@ for i,row in dfp.iterrows():
 df = pd.concat([dfp, emo_df], axis=1)
  #Remove i tweet che non hanno associato nessun sentimento
 df = df[df[emotions].any(axis=1)]
+df.to_csv('df_final.csv', index = False)
