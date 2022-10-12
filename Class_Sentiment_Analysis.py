@@ -139,7 +139,7 @@ class Sentimen_Analysis():
         plt.figure(figsize=(8,10))
         sns.barplot(y= 'result', x = 'count', data = df_count_words[0:10]) #stampo le prime 25 parole che mi danno sentiment positive
         plt.title(title_plot)
-        plt.savefig(os.path.join(self.path_plot+'/bar_chart/'+name_plot))
+        plt.savefig(os.path.join(self.path_plot+'/bar_chart/' +self.sent +'/'+name_plot))
         plt.show()
         
     def word_clouds(self, df_count_words, name_plot, sent):
