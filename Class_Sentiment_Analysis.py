@@ -128,7 +128,7 @@ class Sentimen_Analysis():
 
     def comparing_parks(self,df_media_parks,name_plot):
         cmap = cm.get_cmap('Set3') # Colour map (there are many others)
-        fig = df_media_parks.plot.bar(cmap = cmap)
+        df_media_parks.plot.bar(cmap = cmap)
         plt.xlabel("Emotions")
         plt.ylabel("Frequencies")
         plt.legend(bbox_to_anchor= (1.2,1))
@@ -139,9 +139,9 @@ class Sentimen_Analysis():
         plt.figure(figsize=(8,10))
         sns.barplot(y= 'result', x = 'count', data = df_count_words[0:10]) #stampo le prime 25 parole che mi danno sentiment positive
         plt.title(title_plot)
-        plt.savefig(os.path.join(self.path_plot+'/bar_chart/' +self.sent +'/'+name_plot))
+        plt.savefig(os.path.join(self.path_plot+'/bar_chart/' +self.sent +'/'+name_plot+'.png'))
         plt.show()
-        
+
     def word_clouds(self, df_count_words, name_plot, sent):
         cmap_plot, color_plot = colors(sent)
         word = dict(zip(df_count_words['result'].tolist(), df_count_words['count'].tolist()))
@@ -188,18 +188,21 @@ class Sentimen_Analysis():
         #####PLOT#####
         #self.mean_pie(ds,'Pie chart')
         #self.comparing_parks(df_media_parks,'comparing_parks')
-        title_plot = 'Most frequent '+self.sent+' words in ' +self.input_park+' park'
-        self.most_freq_sent_word_bypark(df_count_words,title_plot, self.sent+'_'+self.input_park+'.png')
+        #title_plot = 'Most frequent '+self.sent+' words in ' +self.input_park+' park'
+        #self.most_freq_sent_word_bypark(df_count_words,title_plot, self.sent+'_'+self.input_park+'.eps')
         #self.word_clouds(df_count_words, 'word_clouds_pos', 'pos')
     
-        return df_media_parks, ds
+        return df_count_words
         #, explore_tweet_df, df_match_list
 
 #park_list = ['ballyhoura','westfields','shannon','arthur','baggot','castletroy neighbourhood',"people s park", 'byrne']
 #0: 'posemo',1 :'negemo', 2:'social',3:'family',4:'friend',5:'leisure'] 
 if __name__ == '__main__':
-    #for park in park_list:
-    nlp = Sentimen_Analysis(input ='liwc',input_park = 'shannon', input_word = 'support', 
+#s =['positive','negative']
+
+    nlp = Sentimen_Analysis(input ='liwc',input_park = 'people s park', input_word = 'support', 
                             sent = 'positive', num_lista = 0)
-    df_media_parks, ds = nlp.orchestrator()
+
+    df_count_words = nlp.orchestrator()
+    df_count_words.to_csv('df_plot/df_pos_peoplespark.csv', index = False)
     

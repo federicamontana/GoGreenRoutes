@@ -18,18 +18,28 @@ popup = folium.Popup(iframe1,iframe2, max_width=400)
 folium.Marker(location=[52.310711, -8.509693], tooltip=html, popup = popup, 
 icon=folium.Icon(color = 'gray')).add_to(m)
 
+####grafici insieme
+import pandas as pd
+import seaborn as sns
+from matplotlib import pyplot as plt
+park= 'westfields'
+filepath = 'df_plot/df_neg_'+park+'.csv'
+df = pd.read_csv(filepath)
+fig, axes = plt.subplots(1, 2, figsize=(10,10))
+fig.suptitle('Most frequent words in '+park+' park')
+title_plot = 'Negative words'
+sns.barplot(ax=axes[0], y= 'result', x = 'count',data = df[0:10])
+axes[0].set_title(title_plot)
+filepath = 'df_plot/df_pos_'+park+'.csv'
+df = pd.read_csv(filepath)
+title_plot = 'Positive words '
+sns.barplot(ax=axes[1], y= 'result', x = 'count', data = df[0:10])
+axes[1].set_title(title_plot)
+plt.savefig('plots/posneg/'+park+'.png')
 
-from PIL import Image
-#Read the two images
-image1 = Image.open('plots/bar_chart/positive_shannon.png')
-image1.show()
-image2 = Image.open('plots/bar_chart/negative_shannon.png')
-image2.show()
-image1_size = image1.size
-image2_size = image2.size
-new_image = Image.new('RGB',(2*image1_size[0], image1_size[1]), (250,250,250))
-new_image.paste(image1,(0,0))
-new_image.paste(image2,(image1_size[0],0))
-new_image.save("plots/merged_image.png")
-new_image.show()
+
+
+
+
+
 
