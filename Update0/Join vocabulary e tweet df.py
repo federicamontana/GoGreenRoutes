@@ -14,7 +14,7 @@ df_tweet = pd.read_csv('../dataframe/df_complete_2.csv')
 #df_final = text_emotion2(df_tweet, 'text1', df_dic)
 # dfp = pd.DataFrame({"text1": ["Hi abandon abandonig", "abilities", "I have been abuse"]})
 # df2p = df_dic.head(6).reset_index().drop(['index'],axis=1) #da qua succede il problema
-#quello che accade è che emod_score può risultare un dataframe con più righe
+#quello che accade è che emo_score può risultare un dataframe con più righe
 # non solo una come dovrebbe e quindi poi quando viene associato a emo_df mi da errore
 # ho quindi aggiunto un if in piu per dire che se ottengo un df con piu righe allora 
 # prendimi solo la prima riga

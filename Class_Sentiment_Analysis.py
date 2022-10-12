@@ -167,28 +167,28 @@ class Sentimen_Analysis():
         #Read df cleaned directly
         #df_tweet = pd.read_csv(os.path.join(self.path_tweet,'df_completec.csv'))
         #Read df joined directly
-        #--df_final = pd.read_csv(os.path.join(self.path_tweet,'df_final.csv'))
+        df_final = pd.read_csv(os.path.join(self.path_tweet,'df_final.csv'))
         #Normalizzazione
-        #--df_norm = self.normalization(df_final)
+        df_norm = self.normalization(df_final)
         
         ####ANALYSIS#####
         #Return the statistics for each parks and the average of the park for each emotion
-        #--df_media_parks, ds = self.parks_mean(df_norm)
+        df_media_parks, ds = self.parks_mean(df_norm)
         #Seleziono le parole corrispondenti alla lista dell'emozione corrispondente
-        #--lista = emotion_lists[self.num_lista]
+        lista = emotion_lists[self.num_lista]
         #Seleziono un parco tramite input_park e conto le parole più frequenti in df_count_words
         #df_match_list: nella colonna 'result' ho le parole che hanno sentiment per ogni tweet
-        #--df_count_words, df_match_list = self.analysis(df_norm,lista)
+        df_count_words, df_match_list = self.analysis(df_norm,lista)
         # self.most_freq_sent_word_bypark(df_count_words,title_plot,name_plot)
         #####CHECK WORDS#####
         #explore_tweet_df contiene solo tweet che hanno 'input_word' selezionata
-        #--explore_tweet_df = df_match_list[df_match_list['result'].apply(lambda x: ' '.join(x)).str.contains(r"\b"+self.input_word+r"\b", regex=True)]
+        explore_tweet_df = df_match_list[df_match_list['result'].apply(lambda x: ' '.join(x)).str.contains(r"\b"+self.input_word+r"\b", regex=True)]
         
         #####PLOT#####
         #self.mean_pie(ds,'Pie chart')
-        #--self.comparing_parks(df_media_parks,'comparing_parks')
-        #--title_plot = 'Most frequent '+self.sent+' words in ' +self.input_park+' park'
-        #--self.most_freq_sent_word_bypark(df_count_words,title_plot, self.sent+'_'+self.input_park+'.png')
+        self.comparing_parks(df_media_parks,'comparing_parks')
+        title_plot = 'Most frequent '+self.sent+' words in ' +self.input_park+' park'
+        self.most_freq_sent_word_bypark(df_count_words,title_plot, self.sent+'_'+self.input_park+'.png')
         #self.word_clouds(df_count_words, 'word_clouds_pos', 'pos')
     
         return df_dic, df2, emotion_lists
