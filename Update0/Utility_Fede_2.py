@@ -7,7 +7,7 @@ from nltk.stem.snowball import SnowballStemmer
 from tqdm.notebook import tqdm as tqdm
 #from tqdm import tqdm_notebook as tqdm
 from tqdm import trange
-
+import re
 
 def new_df(sent,df,df2):
     df2[sent] = df.apply(lambda i: i.astype(str).str.contains(sent).any(), axis=0).astype(int)
@@ -129,7 +129,7 @@ def text_emotion2(df_tweet, column, df_dic):
     emo_df = pd.DataFrame(0, index=df.index, columns=emotions)
     for i,row in df.iterrows(): 
         l=[]
-        tweet = word_tokenize(df.loc[i]['text1'])
+        tweet = word_tokenize(df.loc[i][column])
         for wt in tweet:
             for word in df_dic['word']:
                 l.append(bool(re.findall(r"\b"+word,wt)))
