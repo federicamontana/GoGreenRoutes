@@ -78,7 +78,7 @@ class Sentimen_Analysis():
         df["text1"] = df["text1"].apply(lambda x: " ".join(x for x in x.split() if x not in stopwords))
         df['text1'] = df['text1'].apply(space)
         # Creo una colonna con gli Hashtag
-        df["hashtag"] = df["text"].apply(lambda x: re.findall(r"#(\w+)", x.lower()))
+        df["hashtag"] = df["text"].apply(lambda x: " ".join(re.findall(r"#(\w+)", x.lower())))
         df = df.drop_duplicates(subset=['text1'])
         df.to_csv(os.path.join(self.path_tweet,'df_completec.csv'), index = False) 
         return df
@@ -190,19 +190,18 @@ class Sentimen_Analysis():
         #self.comparing_parks(df_media_parks,'comparing_parks')
         #title_plot = 'Most frequent '+self.sent+' words in ' +self.input_park+' park'
         #self.most_freq_sent_word_bypark(df_count_words,title_plot, self.sent+'_'+self.input_park+'.eps')
-        #self.word_clouds(df_count_words, 'word_clouds_pos', 'pos')
+        self.word_clouds(df_count_words, 'word_clouds_neg_'+self.input_park, 'neg')
     
-        return df_count_words
+        return df2
         #, explore_tweet_df, df_match_list
 
-#park_list = ['ballyhoura','westfields','shannon','arthur','baggot','castletroy neighbourhood',"people s park", 'byrne']
+park_list = ['ballyhoura','westfields','shannon','arthur','castletroy neighbourhood',"people s park", 'byrne']
 #0: 'posemo',1 :'negemo', 2:'social',3:'family',4:'friend',5:'leisure'] 
 if __name__ == '__main__':
-#s =['positive','negative']
-
-    nlp = Sentimen_Analysis(input ='liwc',input_park = 'people s park', input_word = 'support', 
-                            sent = 'positive', num_lista = 0)
-
-    df_count_words = nlp.orchestrator()
-    df_count_words.to_csv('df_plot/df_pos_peoplespark.csv', index = False)
+    for park in park_list:
+        nlp = Sentimen_Analysis(input ='liwc',input_park = park, input_word = 'support', 
+                            sent = 'negative', num_lista = 1)
+    
+        df2 = nlp.orchestrator()
+    #df_count_words.to_csv('df_plot/df_pos_peoplespark.csv', index = False)
     
