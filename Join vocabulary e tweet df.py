@@ -20,8 +20,10 @@ df_tweet = pd.read_csv('dataframe/df_completec.csv')
 #questo anche perchè di solito parole simili hanno anche emozioni uguali e quindi va bene considerare solo una parola
 # non si tiene in conto però del fatto che ci sono 2 parole (o piu) e che quindi quel sentimento è associato a 2 (o piu) parole
 
-dfp= df_tweet
+dfp= df_tweet.head(10)
 df2p = df_dic
+# dfp= df_tweet
+# df2p = df_dic
 emotions = df2p.columns.drop('word')
 emo_df = pd.DataFrame(0, index=dfp.index, columns=emotions)
 for i,row in dfp.iterrows(): 
